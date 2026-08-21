@@ -1,0 +1,8 @@
+{
+  "name": "Sudoku Pencil",
+  "short_name": "Sudoku Pencil",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f7f5ef",
+  "theme_color": "#f7f5ef"
+}
