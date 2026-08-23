@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#f7f5ef">
 <link rel="manifest" href="manifest.json">
-<title>Sudoku Pencil v0.5.1</title>
+<title>Sudoku Pencil v0.5.2</title>
 <style>
 :root{--paper:#f7f5ef;--ink:#242424;--muted:#77736a;--heavy:#37352f;--panel:#efede6}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -51,7 +51,7 @@ body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:i
 <main class="content">
   <aside class="panel">
     <h3>Puzzle</h3><button id="new">＋ New puzzle</button><button class="selected">Medium</button><button>Hard</button>
-    <div class="stats">Version&nbsp;&nbsp;0.5.1<br>Personal samples&nbsp;&nbsp;<span id="sampleCount">0</span></div>
+    <div class="stats">Version&nbsp;&nbsp;0.5.2<br>Personal samples&nbsp;&nbsp;<span id="sampleCount">0</span></div>
   </aside>
 
   <div>
@@ -72,7 +72,7 @@ body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:i
   </aside>
 </main>
 
-<div class="bottom">v0.5.1 · visible iPad recognition feedback</div>
+<div class="bottom">v0.5.2 · recognition classifier fix</div>
 </div>
 
 <div class="modal" id="modal">
@@ -111,11 +111,35 @@ board.addEventListener('pointerup',endStroke);board.addEventListener('pointercan
 
 function rasterize(strokes,N=48){const cv=document.createElement('canvas');cv.width=cv.height=N;const g=cv.getContext('2d');g.fillStyle='black';g.fillRect(0,0,N,N);g.strokeStyle='white';g.lineCap='round';g.lineJoin='round';let pts=[];for(const s of strokes)for(const p of s)pts.push(p);if(!pts.length)return new Float32Array(N*N);let minX=Math.min(...pts.map(p=>p.x)),maxX=Math.max(...pts.map(p=>p.x)),minY=Math.min(...pts.map(p=>p.y)),maxY=Math.max(...pts.map(p=>p.y));let w=Math.max(1,maxX-minX),h=Math.max(1,maxY-minY),scale=(N*.72)/Math.max(w,h),ox=(N-w*scale)/2-minX*scale,oy=(N-h*scale)/2-minY*scale;g.lineWidth=Math.max(2,N*.075);for(const s of strokes){if(s.length<2)continue;g.beginPath();g.moveTo(s[0].x*scale+ox,s[0].y*scale+oy);for(let k=1;k<s.length;k++)g.lineTo(s[k].x*scale+ox,s[k].y*scale+oy);g.stroke()}const img=g.getImageData(0,0,N,N).data,out=new Float32Array(N*N);for(let i=0;i<N*N;i++)out[i]=img[i*4]/255;return out}
 function distance(a,b){let s=0;for(let i=0;i<a.length;i++){let d=a[i]-b[i];s+=d*d}return s/a.length}
-const trainingRasters={};for(let d=1;d<=9;d++)trainingRasters[d]=training[d].map(rasterize);
+const trainingRasters={};for(let d=1;d<=9;d++)trainingRasters[d]=training[d].map(sample=>rasterize(sample));
 function classify(strokes){const q=rasterize(strokes),scores=[];for(let d=1;d<=9;d++){if(!trainingRasters[d].length)continue;let ds=trainingRasters[d].map(r=>distance(q,r)).sort((a,b)=>a-b);let score=(ds[0]+(ds[1]??ds[0]))/2;scores.push({digit:d,score})}scores.sort((a,b)=>a.score-b.score);if(!scores.length)return null;let best=scores[0],second=scores[1]||{score:best.score+.2,digit:best.digit},third=scores[2]||second;let margin=(second.score-best.score)/Math.max(second.score,.0001),confidence=Math.max(0,Math.min(.99,.58+margin*1.55-best.score*.35));return{best,second,third,confidence}}
 function commitRecognition(cell,digit,detail){recognized[cell]=digit;document.getElementById('lastGuess').textContent=digit;document.getElementById('lastDetail').textContent=detail;showFeedback(`Recognized: ${digit}`,'good')}
 function showChoices(cell,result){const modal=document.getElementById('modal'),row=document.getElementById('choices');row.innerHTML='';const opts=[result.best,result.second,result.third].filter((x,i,a)=>a.findIndex(y=>y.digit===x.digit)===i);document.getElementById('modalText').textContent=`Closest matches: ${opts.map(o=>o.digit).join(', ')}. Tap what you intended.`;opts.forEach(o=>{let b=document.createElement('button');b.className='choice';b.textContent=o.digit;b.onclick=()=>{commitRecognition(cell,o.digit,'Confirmed by you');modal.classList.remove('show')};row.appendChild(b)});modal.classList.add('show')}
-function recognizeCell(cell){if(cell<0||!cells[cell].length)return;if(totalSamples<9){showFeedback('No handwriting profile found','warn',2500);document.getElementById('lastDetail').textContent='Complete the V0.4 handwriting test on this same site/browser.';return}const result=classify(cells[cell]);if(!result){showFeedback('Could not read that digit','warn');return}const pct=Math.round(result.confidence*100);if(result.confidence>=.86){commitRecognition(cell,result.best.digit,`Accepted automatically · ${pct}%`)}else{document.getElementById('lastGuess').textContent=result.confidence>=.68?`${result.best.digit}?`:'Unsure';document.getElementById('lastDetail').textContent=`Confidence ${pct}%`;showFeedback(`Not sure: ${result.best.digit} or ${result.second.digit}?`,'warn',2500);showChoices(cell,result)}}
+function recognizeCell(cell){
+ try{
+  if(cell<0||!cells[cell].length)return;
+  if(totalSamples<9){
+    showFeedback('No handwriting profile found','warn',2500);
+    document.getElementById('lastDetail').textContent='Complete the V0.4 handwriting test on this same site/browser.';
+    return;
+  }
+  const result=classify(cells[cell]);
+  if(!result){showFeedback('Could not read that digit','warn');return}
+  const pct=Math.round(result.confidence*100);
+  if(result.confidence>=.86){
+    commitRecognition(cell,result.best.digit,`Accepted automatically · ${pct}%`);
+  }else{
+    document.getElementById('lastGuess').textContent=result.confidence>=.68?`${result.best.digit}?`:'Unsure';
+    document.getElementById('lastDetail').textContent=`Confidence ${pct}%`;
+    showFeedback(`Not sure: ${result.best.digit} or ${result.second.digit}?`,'warn',2500);
+    showChoices(cell,result);
+  }
+ }catch(err){
+  console.error('Recognition error',err);
+  showFeedback('Recognition error — please try again','warn',3000);
+  document.getElementById('lastDetail').textContent='The recognizer hit an error instead of silently stopping.';
+ }
+}
 
 function setErase(v){erase=v;document.getElementById('erase').classList.toggle('selected',erase);document.getElementById('pencil').classList.toggle('selected',!erase)}
 document.getElementById('recognizeNow').onclick=()=>recognizeCell(selected);
