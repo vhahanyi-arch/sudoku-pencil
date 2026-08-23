@@ -5,120 +5,203 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#f7f5ef">
 <link rel="manifest" href="manifest.json">
-<title>Sudoku Pencil v0.4</title>
+<title>Sudoku Pencil v0.5</title>
 <style>
-:root{--paper:#f7f5ef;--ink:#242424;--muted:#77736a;--heavy:#37352f;--panel:#efede6}
+:root{--paper:#f7f5ef;--ink:#242424;--muted:#77736a;--heavy:#37352f;--panel:#efede6;--blue:#e8f0ff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
 body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:inherit}
 .app{height:100dvh;display:grid;grid-template-rows:auto 1fr auto;padding:env(safe-area-inset-top) 18px env(safe-area-inset-bottom);max-width:1500px;margin:auto}
 .top{height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .title{font-family:"Bradley Hand","Marker Felt",cursive;font-size:31px}
-.tabs{display:flex;gap:8px;background:#ece9e0;border-radius:14px;padding:4px}.tab{padding:9px 13px;border-radius:10px;color:#666156}.tab.active{background:white;box-shadow:0 1px 4px #00000012;color:#222}
+.center{display:flex;gap:14px;align-items:center;color:#625f57;font-size:14px}
+.pill{padding:7px 10px;border-radius:999px;background:#ece9e0}.pill.good{background:#e6efe6}.pill.warn{background:#f4ead6}
 .actions{display:flex;gap:6px}.action{padding:10px 12px;border-radius:12px}.action:active{background:#e4e1d8}
-.view{display:none;min-height:0}.view.active{display:block}
-.gamegrid{height:100%;min-height:0;display:grid;grid-template-columns:210px minmax(300px,760px) 210px;gap:24px;align-items:center;justify-content:center}
-.panel{background:#efede6bf;border:1px solid #dedbd1;border-radius:16px;padding:18px;color:#555148}.panel h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 12px;color:var(--muted)}.panel button{display:block;width:100%;text-align:left;padding:10px 8px;border-radius:10px}.panel button:hover{background:#e4e1d8}.selected{background:#e0ddd4!important}.stats{border-top:1px solid #d8d5cc;margin-top:15px;padding-top:15px;font-size:13px;line-height:1.8}
-.boardwrap{width:min(78vw,78vh,760px);aspect-ratio:1}#board{width:100%;height:100%;display:block;background:#fffdf9;border:2px solid var(--heavy);touch-action:none;box-shadow:0 4px 18px #0000000d}
+.content{min-height:0;display:grid;grid-template-columns:210px minmax(300px,760px) 230px;gap:24px;align-items:center;justify-content:center}
+.panel{background:#efede6bf;border:1px solid #dedbd1;border-radius:16px;padding:18px;color:#555148}
+.panel h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 12px;color:var(--muted)}
+.panel button{display:block;width:100%;text-align:left;padding:10px 8px;border-radius:10px}.panel button:hover{background:#e4e1d8}.selected{background:#e0ddd4!important}
+.stats{border-top:1px solid #d8d5cc;margin-top:15px;padding-top:15px;font-size:13px;line-height:1.8}
+.boardwrap{width:min(78vw,78vh,760px);aspect-ratio:1}
+#board{width:100%;height:100%;display:block;background:#fffdf9;border:2px solid var(--heavy);touch-action:none;box-shadow:0 4px 18px #0000000d}
 .bottom{text-align:center;padding:7px 0 10px;color:#817d73;font-size:13px}
-.train{height:100%;min-height:0;display:grid;grid-template-columns:250px 1fr;gap:22px;padding:6px 0 8px}
-.train-sidebar{background:#efede6bf;border:1px solid #dedbd1;border-radius:16px;padding:18px;overflow:auto}.train-sidebar h2{margin:0 0 8px;font-size:22px}.train-sidebar p{margin:0 0 14px;color:#6f6a61;font-size:14px;line-height:1.45}
-.digit-list{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.digit-btn{padding:12px 0;border-radius:12px;background:#e8e5dc;font-weight:600}.digit-btn.active{background:white;box-shadow:0 1px 5px #00000018}
-.progress{margin-top:16px;padding-top:14px;border-top:1px solid #d8d5cc;font-size:13px;line-height:1.8;color:#625f57}
-.train-main{min-width:0;overflow:auto;padding-right:4px}.train-header{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:14px}.train-header h2{margin:0;font-size:24px}.train-header .sub{color:#77736a;font-size:14px}
-.sample-grid{display:grid;grid-template-columns:repeat(5,minmax(110px,1fr));gap:12px}.sample-card{background:white;border:1px solid #dedbd1;border-radius:14px;padding:10px;box-shadow:0 2px 8px #0000000a}.sample-card header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;color:#6d685f;font-size:12px}.sample-canvas{width:100%;aspect-ratio:1;display:block;background:#fffdf9;border:1px solid #cfcac0;border-radius:10px;touch-action:none}.sample-footer{display:flex;justify-content:space-between;gap:6px;margin-top:8px}.mini{font-size:12px;padding:7px 9px;border-radius:9px;background:#f0eee8}
-.train-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.primary{background:#222;color:white;padding:11px 15px;border-radius:12px}.secondary{background:#e8e5dc;padding:11px 15px;border-radius:12px}
-.notice{margin-top:12px;padding:11px 13px;border-radius:12px;background:#ece9e0;color:#625f57;font-size:13px;line-height:1.45}
-@media(max-width:1000px){.gamegrid{grid-template-columns:1fr}.gamegrid .panel{display:none}.boardwrap{width:min(92vw,76vh)}.train{grid-template-columns:1fr}.train-sidebar{display:block}.digit-list{grid-template-columns:repeat(5,1fr)}.sample-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:700px){.top{height:58px}.title{font-size:26px}.tabs{font-size:13px}.action{padding:8px 9px}.sample-grid{grid-template-columns:repeat(2,1fr)}}
+.recognition-box{background:white;border:1px solid #ddd8cc;border-radius:13px;padding:12px;margin-top:10px}
+.recognition-box strong{font-size:20px}.muted{color:#77736a;font-size:12px;line-height:1.45}
+.modal{position:fixed;inset:0;background:#00000028;display:none;align-items:center;justify-content:center;padding:24px;z-index:20}
+.modal.show{display:flex}.dialog{width:min(420px,92vw);background:#fffdf9;border:1px solid #d8d3c8;border-radius:20px;padding:22px;box-shadow:0 18px 60px #0000002c}
+.dialog h2{margin:0 0 6px;font-size:22px}.dialog p{margin:0 0 16px;color:#6d685f}
+.choice-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.choice{font-size:32px;font-weight:600;padding:18px 0;border-radius:14px;background:#ece9e0}.choice:first-child{background:#e8f0ff}
+.dialog .small{margin-top:12px;font-size:12px;color:#817d73;text-align:center}
+@media(max-width:1000px){.content{grid-template-columns:1fr}.panel{display:none}.boardwrap{width:min(92vw,76vh)}.center{font-size:13px}.title{font-size:27px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
   <div class="title">Sudoku</div>
-  <div class="tabs">
-    <button class="tab active" data-view="gameView">Game</button>
-    <button class="tab" data-view="trainView">Handwriting Test</button>
+  <div class="center">
+    <span>Medium</span>
+    <span id="timer">00:00</span>
+    <span id="profileStatus" class="pill">Loading handwriting…</span>
   </div>
-  <div class="actions"><button class="action" id="undo">Undo</button><button class="action" id="redo">Redo</button><button class="action" id="clear">Clear</button></div>
+  <div class="actions">
+    <button class="action" id="undo">Undo</button>
+    <button class="action" id="redo">Redo</button>
+    <button class="action" id="clear">Clear</button>
+  </div>
 </header>
 
-<main id="gameView" class="view active">
-  <div class="gamegrid">
-    <aside class="panel"><h3>Puzzle</h3><button id="new">＋ New puzzle</button><button class="selected">Medium</button><button>Hard</button><div class="stats">Version&nbsp;&nbsp;0.4<br>Handwriting samples&nbsp;&nbsp;<span id="gameSampleCount">0</span></div></aside>
-    <div class="boardwrap"><canvas id="board"></canvas></div>
-    <aside class="panel"><h3>Writing</h3><button id="erase">Eraser</button><button id="pencil" class="selected">Pencil</button><div class="stats">Use the Handwriting Test tab to collect examples of how you write each digit.</div></aside>
+<main class="content">
+  <aside class="panel">
+    <h3>Puzzle</h3>
+    <button id="new">＋ New puzzle</button>
+    <button class="selected">Medium</button>
+    <button>Hard</button>
+    <div class="stats">Version&nbsp;&nbsp;0.5<br>Personal samples&nbsp;&nbsp;<span id="sampleCount">0</span></div>
+  </aside>
+
+  <div class="boardwrap"><canvas id="board"></canvas></div>
+
+  <aside class="panel">
+    <h3>Writing</h3>
+    <button id="erase">Eraser</button>
+    <button id="pencil" class="selected">Pencil</button>
+    <button id="recognizeNow">Recognize selected cell</button>
+    <div class="recognition-box">
+      <div class="muted">Last recognition</div>
+      <strong id="lastGuess">—</strong>
+      <div class="muted" id="lastDetail">Write naturally. Recognition happens automatically after you finish a digit.</div>
+    </div>
+    <div class="stats">High confidence: accepted automatically.<br>Ambiguous: you choose between the most likely digits.</div>
+  </aside>
+</main>
+
+<div class="bottom">v0.5 · personalized handwriting recognition</div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="dialog">
+    <h2>Which digit did you write?</h2>
+    <p id="modalText">I’m not confident enough to choose automatically.</p>
+    <div class="choice-row" id="choices"></div>
+    <div class="small">Your handwritten ink stays exactly as you wrote it.</div>
   </div>
-</main>
-
-<main id="trainView" class="view">
-  <section class="train">
-    <aside class="train-sidebar">
-      <h2>Train your handwriting</h2>
-      <p>Write the selected digit five times, naturally. Samples are stored only on this device.</p>
-      <div class="digit-list" id="digitList"></div>
-      <div class="progress">
-        <div>Selected digit: <strong id="selectedDigit">1</strong></div>
-        <div>Saved for this digit: <strong id="digitCount">0/5</strong></div>
-        <div>Total samples: <strong id="totalCount">0/45</strong></div>
-      </div>
-    </aside>
-
-    <section class="train-main">
-      <div class="train-header"><div><h2>Write <span id="headerDigit">1</span> five times</h2><div class="sub">Use your Apple Pencil exactly as you would during a Sudoku game.</div></div></div>
-      <div class="sample-grid" id="sampleGrid"></div>
-      <div class="train-actions">
-        <button class="primary" id="saveDigit">Save this digit</button>
-        <button class="secondary" id="clearDigit">Clear all 5</button>
-        <button class="secondary" id="exportData">Export training data</button>
-      </div>
-      <div class="notice" id="notice">Nothing is uploaded anywhere. V0.4 stores these samples in your browser's local storage so we can later use them to personalize recognition.</div>
-    </section>
-  </section>
-</main>
-
-<div class="bottom">v0.4 · handwriting training prototype</div>
 </div>
 
 <script>
 const puzzle=[[0,0,0,2,6,0,7,0,1],[6,8,0,0,7,0,0,9,0],[1,9,0,0,0,4,5,0,0],[8,2,0,1,0,0,0,4,0],[0,0,4,6,0,2,9,0,0],[0,5,0,0,0,3,0,2,8],[0,0,9,3,0,0,0,7,4],[0,4,0,0,5,0,0,3,6],[7,0,3,0,1,8,0,0,0]];
+const TRAINING_KEY='sudokuPencilTrainingV04';
 const board=document.getElementById('board'),ctx=board.getContext('2d');
-let size=0,cells=Array.from({length:81},()=>[]),undo=[],redo=[],stroke=null,active=-1,erase=false;
-function gameSnap(){return cells.map(a=>a.map(s=>s.map(p=>({...p}))))}
-function gameSave(){undo.push(gameSnap());if(undo.length>50)undo.shift();redo=[]}
-function resizeBoard(){let r=board.parentElement.getBoundingClientRect();size=Math.floor(Math.min(r.width,r.height));let d=devicePixelRatio||1;board.width=size*d;board.height=size*d;ctx.setTransform(d,0,0,d,0,0);drawBoard()}
-new ResizeObserver(resizeBoard).observe(board.parentElement);
-function drawBoard(){let c=size/9;ctx.clearRect(0,0,size,size);ctx.fillStyle='#fffdf9';ctx.fillRect(0,0,size,size);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`600 ${Math.round(c*.31)}px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial`;for(let r=0;r<9;r++)for(let x=0;x<9;x++)if(puzzle[r][x]){ctx.fillStyle='#77736a';ctx.fillText(puzzle[r][x],x*c+c/2,r*c+c/2)}ctx.strokeStyle='#222';ctx.lineCap='round';ctx.lineJoin='round';for(let i=0;i<81;i++){let r=Math.floor(i/9),x=i%9;for(const s of cells[i]){if(s.length<2)continue;ctx.lineWidth=s.w||Math.max(2,c*.026);ctx.beginPath();ctx.moveTo(x*c+s[0].x,r*c+s[0].y);for(let k=1;k<s.length;k++)ctx.lineTo(x*c+s[k].x,r*c+s[k].y);ctx.stroke()}}for(let i=1;i<9;i++){ctx.strokeStyle=i%3?'#b5b1a8':'#37352f';ctx.lineWidth=i%3?1:2;ctx.beginPath();ctx.moveTo(i*c,0);ctx.lineTo(i*c,size);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i*c);ctx.lineTo(size,i*c);ctx.stroke()}ctx.strokeStyle='#37352f';ctx.lineWidth=2;ctx.strokeRect(1,1,size-2,size-2)}
-function bpoint(e){let r=board.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}function bidx(p){let c=Math.floor(p.x/(size/9)),r=Math.floor(p.y/(size/9));return r>=0&&r<9&&c>=0&&c<9?r*9+c:-1}
-board.addEventListener('pointerdown',e=>{let p=bpoint(e),i=bidx(p);if(i<0||puzzle[Math.floor(i/9)][i%9])return;gameSave();if(erase){cells[i]=[];drawBoard();return}let c=size/9,x=i%9,r=Math.floor(i/9);stroke=[{x:p.x-x*c,y:p.y-r*c}];stroke.w=Math.max(2,c*.026);cells[i].push(stroke);active=i;board.setPointerCapture(e.pointerId);drawBoard()});
-board.addEventListener('pointermove',e=>{if(!stroke)return;let p=bpoint(e),c=size/9,x=active%9,r=Math.floor(active/9);stroke.push({x:p.x-x*c,y:p.y-r*c});drawBoard()});
-function bend(){stroke=null;active=-1}board.addEventListener('pointerup',bend);board.addEventListener('pointercancel',bend);
+let size=0,cells=Array.from({length:81},()=>[]),undo=[],redo=[],stroke=null,active=-1,selected=-1,erase=false,recognized={},recognizeTimer=null;
+let training=JSON.parse(localStorage.getItem(TRAINING_KEY)||'{}');
+for(let d=1;d<=9;d++)if(!training[d])training[d]=[];
+const totalSamples=Object.values(training).reduce((n,a)=>n+a.length,0);
+document.getElementById('sampleCount').textContent=totalSamples;
+const ps=document.getElementById('profileStatus');
+if(totalSamples>=40){ps.textContent='Personal profile ready';ps.className='pill good'}else{ps.textContent=`Profile ${totalSamples}/45`;ps.className='pill warn'}
+
+function snap(){return{cells:cells.map(a=>a.map(s=>s.map(p=>({...p})))),recognized:{...recognized}}}
+function restore(s){cells=s.cells.map(a=>a.map(st=>st.map(p=>({...p}))));recognized={...s.recognized}}
+function save(){undo.push(snap());if(undo.length>60)undo.shift();redo=[]}
+function resize(){let r=board.parentElement.getBoundingClientRect();size=Math.floor(Math.min(r.width,r.height));let d=devicePixelRatio||1;board.width=size*d;board.height=size*d;ctx.setTransform(d,0,0,d,0,0);draw()}
+new ResizeObserver(resize).observe(board.parentElement);
+
+function draw(){
+ let c=size/9;ctx.clearRect(0,0,size,size);ctx.fillStyle='#fffdf9';ctx.fillRect(0,0,size,size);
+ ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`600 ${Math.round(c*.31)}px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial`;
+ for(let r=0;r<9;r++)for(let x=0;x<9;x++)if(puzzle[r][x]){ctx.fillStyle='#77736a';ctx.fillText(puzzle[r][x],x*c+c/2,r*c+c/2)}
+ ctx.strokeStyle='#222';ctx.lineCap='round';ctx.lineJoin='round';
+ for(let i=0;i<81;i++){let r=Math.floor(i/9),x=i%9;for(const s of cells[i]){if(s.length<2)continue;ctx.lineWidth=s.w||Math.max(2,c*.026);ctx.beginPath();ctx.moveTo(x*c+s[0].x,r*c+s[0].y);for(let k=1;k<s.length;k++)ctx.lineTo(x*c+s[k].x,r*c+s[k].y);ctx.stroke()}}
+ if(selected>=0){ctx.strokeStyle='#9aaed4';ctx.lineWidth=2;ctx.strokeRect(selected%9*c+3,Math.floor(selected/9)*c+3,c-6,c-6)}
+ for(let i=1;i<9;i++){ctx.strokeStyle=i%3?'#b5b1a8':'#37352f';ctx.lineWidth=i%3?1:2;ctx.beginPath();ctx.moveTo(i*c,0);ctx.lineTo(i*c,size);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i*c);ctx.lineTo(size,i*c);ctx.stroke()}
+ ctx.strokeStyle='#37352f';ctx.lineWidth=2;ctx.strokeRect(1,1,size-2,size-2)
+}
+
+function point(e){let r=board.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function cellAt(p){let c=Math.floor(p.x/(size/9)),r=Math.floor(p.y/(size/9));return r>=0&&r<9&&c>=0&&c<9?r*9+c:-1}
+board.addEventListener('pointerdown',e=>{
+ clearTimeout(recognizeTimer);
+ let p=point(e),i=cellAt(p);if(i<0||puzzle[Math.floor(i/9)][i%9])return;
+ selected=i;save();
+ if(erase){cells[i]=[];delete recognized[i];draw();return}
+ let c=size/9,x=i%9,r=Math.floor(i/9);
+ stroke=[{x:p.x-x*c,y:p.y-r*c}];stroke.w=Math.max(2,c*.026);cells[i].push(stroke);active=i;board.setPointerCapture(e.pointerId);draw()
+});
+board.addEventListener('pointermove',e=>{if(!stroke)return;let p=point(e),c=size/9,x=active%9,r=Math.floor(active/9);stroke.push({x:p.x-x*c,y:p.y-r*c});draw()});
+function endStroke(){let ended=active;stroke=null;active=-1;if(ended>=0)recognizeTimer=setTimeout(()=>recognizeCell(ended,true),700)}
+board.addEventListener('pointerup',endStroke);board.addEventListener('pointercancel',endStroke);
+
+function rasterize(strokes,N=48){
+ const cv=document.createElement('canvas');cv.width=cv.height=N;const g=cv.getContext('2d');
+ g.fillStyle='black';g.fillRect(0,0,N,N);g.strokeStyle='white';g.lineCap='round';g.lineJoin='round';
+ let pts=[];for(const s of strokes)for(const p of s)pts.push(p);if(!pts.length)return new Float32Array(N*N);
+ let minX=Math.min(...pts.map(p=>p.x)),maxX=Math.max(...pts.map(p=>p.x)),minY=Math.min(...pts.map(p=>p.y)),maxY=Math.max(...pts.map(p=>p.y));
+ let w=Math.max(1,maxX-minX),h=Math.max(1,maxY-minY),scale=(N*.72)/Math.max(w,h),ox=(N-w*scale)/2-minX*scale,oy=(N-h*scale)/2-minY*scale;
+ g.lineWidth=Math.max(2,N*.075);
+ for(const s of strokes){if(s.length<2)continue;g.beginPath();g.moveTo(s[0].x*scale+ox,s[0].y*scale+oy);for(let k=1;k<s.length;k++)g.lineTo(s[k].x*scale+ox,s[k].y*scale+oy);g.stroke()}
+ const img=g.getImageData(0,0,N,N).data,out=new Float32Array(N*N);for(let i=0;i<N*N;i++)out[i]=img[i*4]/255;return out
+}
+function distance(a,b){let s=0;for(let i=0;i<a.length;i++){let d=a[i]-b[i];s+=d*d}return s/a.length}
+const trainingRasters={};
+for(let d=1;d<=9;d++)trainingRasters[d]=training[d].map(rasterize);
+
+function classify(strokes){
+ const q=rasterize(strokes),scores=[];
+ for(let d=1;d<=9;d++){
+   if(!trainingRasters[d].length)continue;
+   let ds=trainingRasters[d].map(r=>distance(q,r)).sort((a,b)=>a-b);
+   let score=(ds[0]+(ds[1]??ds[0]))/2;
+   scores.push({digit:d,score});
+ }
+ scores.sort((a,b)=>a.score-b.score);
+ if(!scores.length)return null;
+ let best=scores[0],second=scores[1]||{score:best.score+.2},third=scores[2]||second;
+ let margin=(second.score-best.score)/Math.max(second.score,.0001);
+ let confidence=Math.max(0,Math.min(0.99,0.58+margin*1.55-best.score*.35));
+ return {best,second,third,confidence,scores}
+}
+
+function commitRecognition(cell,digit,detail){
+ recognized[cell]=digit;
+ document.getElementById('lastGuess').textContent=digit;
+ document.getElementById('lastDetail').textContent=detail;
+}
+function showChoices(cell,result){
+ const modal=document.getElementById('modal'),row=document.getElementById('choices');row.innerHTML='';
+ const opts=[result.best,result.second,result.third].filter((x,i,a)=>a.findIndex(y=>y.digit===x.digit)===i);
+ document.getElementById('modalText').textContent=`Closest matches: ${opts.map(o=>o.digit).join(', ')}. Tap what you intended.`;
+ opts.forEach(o=>{let b=document.createElement('button');b.className='choice';b.textContent=o.digit;b.onclick=()=>{commitRecognition(cell,o.digit,'Confirmed by you — this correction can become future training data.');modal.classList.remove('show')};row.appendChild(b)});
+ modal.classList.add('show')
+}
+function recognizeCell(cell,automatic=false){
+ if(cell<0||!cells[cell].length)return;
+ if(totalSamples<9){document.getElementById('lastGuess').textContent='—';document.getElementById('lastDetail').textContent='No handwriting profile found. Complete the V0.4 handwriting test first.';return}
+ const result=classify(cells[cell]);if(!result)return;
+ const pct=Math.round(result.confidence*100);
+ if(result.confidence>=.86){
+   commitRecognition(cell,result.best.digit,`Accepted automatically · confidence ${pct}%`);
+ }else if(result.confidence>=.68){
+   document.getElementById('lastGuess').textContent=`${result.best.digit}?`;
+   document.getElementById('lastDetail').textContent=`Ambiguous with ${result.second.digit} · confidence ${pct}%`;
+   showChoices(cell,result);
+ }else{
+   document.getElementById('lastGuess').textContent='Unsure';
+   document.getElementById('lastDetail').textContent=`Low confidence ${pct}% · choose the intended digit`;
+   showChoices(cell,result);
+ }
+}
+
+document.getElementById('recognizeNow').onclick=()=>recognizeCell(selected,false);
 document.getElementById('erase').onclick=()=>{erase=!erase;document.getElementById('erase').classList.toggle('selected',erase);document.getElementById('pencil').classList.toggle('selected',!erase)};
 document.getElementById('pencil').onclick=()=>{erase=false;document.getElementById('erase').classList.remove('selected');document.getElementById('pencil').classList.add('selected')};
-document.getElementById('clear').onclick=()=>{gameSave();cells=Array.from({length:81},()=>[]);drawBoard()};
-document.getElementById('undo').onclick=()=>{if(undo.length){redo.push(gameSnap());cells=undo.pop();drawBoard()}};
-document.getElementById('redo').onclick=()=>{if(redo.length){undo.push(gameSnap());cells=redo.pop();drawBoard()}};
-document.getElementById('new').onclick=()=>{gameSave();cells=Array.from({length:81},()=>[]);drawBoard()};
+document.getElementById('clear').onclick=()=>{save();cells=Array.from({length:81},()=>[]);recognized={};selected=-1;draw()};
+document.getElementById('undo').onclick=()=>{if(undo.length){redo.push(snap());restore(undo.pop());draw()}};
+document.getElementById('redo').onclick=()=>{if(redo.length){undo.push(snap());restore(redo.pop());draw()}};
+document.getElementById('new').onclick=()=>{save();cells=Array.from({length:81},()=>[]);recognized={};selected=-1;draw()};
 
-const KEY='sudokuPencilTrainingV04';
-let training=JSON.parse(localStorage.getItem(KEY)||'{}');
-for(let d=1;d<=9;d++)if(!training[d])training[d]=[];
-let selectedDigit=1;
-let working=Array.from({length:5},()=>[]);
-function totalSamples(){return Object.values(training).reduce((n,a)=>n+a.length,0)}
-function updateCounts(){document.getElementById('selectedDigit').textContent=selectedDigit;document.getElementById('headerDigit').textContent=selectedDigit;document.getElementById('digitCount').textContent=`${training[selectedDigit].length}/5`;document.getElementById('totalCount').textContent=`${totalSamples()}/45`;document.getElementById('gameSampleCount').textContent=totalSamples()}
-function saveTraining(){localStorage.setItem(KEY,JSON.stringify(training));updateCounts()}
-function makeDigitButtons(){let el=document.getElementById('digitList');el.innerHTML='';for(let d=1;d<=9;d++){let b=document.createElement('button');b.className='digit-btn'+(d===selectedDigit?' active':'');b.textContent=d;b.onclick=()=>{selectedDigit=d;working=Array.from({length:5},()=>[]);makeDigitButtons();makeSampleCards();updateCounts()};el.appendChild(b)}}
-function makeSampleCards(){let grid=document.getElementById('sampleGrid');grid.innerHTML='';for(let i=0;i<5;i++){let card=document.createElement('div');card.className='sample-card';let h=document.createElement('header');h.innerHTML=`<span>Example ${i+1}</span><span>${working[i].length?'drawn':'empty'}</span>`;let cv=document.createElement('canvas');cv.className='sample-canvas';let foot=document.createElement('div');foot.className='sample-footer';let clear=document.createElement('button');clear.className='mini';clear.textContent='Clear';clear.onclick=()=>{working[i]=[];drawSample(cv,i);h.lastChild.textContent='empty'};foot.appendChild(clear);card.append(h,cv,foot);grid.appendChild(card);setupSampleCanvas(cv,i,h)}}
-function setupSampleCanvas(cv,i,h){function resize(){let r=cv.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=Math.floor(r.width*d);cv.height=Math.floor(r.height*d);cv.getContext('2d').setTransform(d,0,0,d,0,0);drawSample(cv,i)}new ResizeObserver(resize).observe(cv);let current=null;function p(e){let r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}cv.addEventListener('pointerdown',e=>{current=[p(e)];working[i].push(current);cv.setPointerCapture(e.pointerId);h.lastChild.textContent='drawn';drawSample(cv,i)});cv.addEventListener('pointermove',e=>{if(!current)return;current.push(p(e));drawSample(cv,i)});cv.addEventListener('pointerup',()=>current=null);cv.addEventListener('pointercancel',()=>current=null)}
-function drawSample(cv,i){let g=cv.getContext('2d'),r=cv.getBoundingClientRect();g.clearRect(0,0,r.width,r.height);g.fillStyle='#fffdf9';g.fillRect(0,0,r.width,r.height);g.strokeStyle='#222';g.lineCap='round';g.lineJoin='round';g.lineWidth=Math.max(2,r.width*.025);for(const s of working[i]){if(s.length<2)continue;g.beginPath();g.moveTo(s[0].x,s[0].y);for(let k=1;k<s.length;k++)g.lineTo(s[k].x,s[k].y);g.stroke()}}
-document.getElementById('saveDigit').onclick=()=>{let complete=working.filter(a=>a.length>0);if(!complete.length){document.getElementById('notice').textContent='Write at least one example before saving.';return}training[selectedDigit]=complete.slice(0,5).map(sample=>sample.map(stroke=>stroke.map(p=>({x:p.x,y:p.y}))));saveTraining();document.getElementById('notice').textContent=`Saved ${training[selectedDigit].length} example${training[selectedDigit].length===1?'':'s'} for digit ${selectedDigit} on this iPad.`;working=Array.from({length:5},()=>[]);makeSampleCards()};
-document.getElementById('clearDigit').onclick=()=>{working=Array.from({length:5},()=>[]);makeSampleCards();document.getElementById('notice').textContent=`Cleared the five working boxes for digit ${selectedDigit}. Saved samples were not deleted.`};
-document.getElementById('exportData').onclick=()=>{let blob=new Blob([JSON.stringify({version:'0.4',created:new Date().toISOString(),samples:training},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='sudoku-pencil-handwriting-v04.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(b.dataset.view).classList.add('active');if(b.dataset.view==='gameView')setTimeout(resizeBoard,50)});
-makeDigitButtons();makeSampleCards();updateCounts();resizeBoard();
+let sec=0;setInterval(()=>{sec++;document.getElementById('timer').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`},1000);
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+resize();
 </script>
 </body>
 </html>
