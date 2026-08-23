@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#f7f5ef">
 <link rel="manifest" href="manifest.json">
-<title>Sudoku Pencil v0.6.1</title>
+<title>Sudoku Pencil v0.7</title>
 <style>
 :root{--paper:#f7f5ef;--ink:#242424;--muted:#77736a;--heavy:#37352f;--panel:#efede6}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -31,7 +31,7 @@ body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:i
 .bottom{text-align:center;padding:7px 0 10px;color:#817d73;font-size:13px}
 .recognition-box{background:white;border:1px solid #ddd8cc;border-radius:13px;padding:12px;margin-top:10px}
 .recognition-box strong{font-size:20px}.muted{color:#77736a;font-size:12px;line-height:1.45}
-.mobile-controls{display:none;justify-content:center;gap:8px;padding-top:8px;flex-wrap:wrap}.mobile-controls button{padding:9px 12px;border-radius:10px;background:#e8e5dc}
+.mobile-controls{display:none;justify-content:center;gap:8px;padding-top:8px;flex-wrap:wrap}.mobile-controls button{padding:9px 12px;border-radius:10px;background:#e8e5dc}.mobile-controls button.active{background:#fff;box-shadow:0 1px 5px #00000018}.mode-note{background:#fff5df!important}
 .modal{position:fixed;inset:0;background:#00000035;display:none;align-items:center;justify-content:center;padding:24px;z-index:30}.modal.show{display:flex}
 .dialog{width:min(440px,92vw);background:#fffdf9;border:1px solid #d8d3c8;border-radius:20px;padding:22px;box-shadow:0 18px 60px #0000002c}
 .dialog h2{margin:0 0 8px;font-size:24px}.dialog p{margin:0 0 16px;color:#6d685f}
@@ -71,7 +71,7 @@ body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:i
     <button id="new">＋ New puzzle</button>
     <button id="resume">↻ Resume saved game</button>
     <div class="stats">
-      Version&nbsp;&nbsp;0.6.1<br>
+      Version&nbsp;&nbsp;0.7<br>
       Solved&nbsp;&nbsp;<span id="solvedCount">0</span><br>
       Best time&nbsp;&nbsp;<span id="bestTime">—</span><br>
       Adaptive corrections&nbsp;&nbsp;<span id="correctionCount">0</span>
@@ -85,6 +85,7 @@ body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:i
     </div>
     <div class="mobile-controls">
       <button id="mobilePencil">Pencil</button>
+      <button id="mobileNotes">Notes</button>
       <button id="mobileErase">Eraser</button>
       <button id="mobileRecognize">Recognize</button>
       <button id="mobileCorrect">Correct</button>
@@ -96,18 +97,25 @@ body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:i
     <h3>Writing</h3>
     <button id="erase">Eraser</button>
     <button id="pencil" class="selected">Pencil</button>
+    <button id="notesMode">Notes mode</button>
     <button id="recognizeNow">Recognize selected cell</button>
     <button id="correctLast">Correct selected cell</button>
+    <label class="muted" for="mistakeMode">Mistake checking</label>
+    <select id="mistakeMode">
+      <option value="off" selected>Off</option>
+      <option value="conflict">Sudoku conflicts only</option>
+      <option value="solution">Check against solution</option>
+    </select>
     <div class="recognition-box">
       <div class="muted">Last recognition</div>
       <strong id="lastGuess">—</strong>
-      <div class="muted" id="lastDetail">Your handwritten ink remains visible.</div>
+      <div class="muted" id="lastDetail">Final answers and notes both remain handwritten.</div>
     </div>
-    <div class="stats">The current puzzle and handwriting are saved automatically on this device.</div>
+    <div class="stats">Notes, answers, recognition learning, and the current puzzle are saved automatically on this device.</div>
   </aside>
 </main>
 
-<div class="bottom">v0.6.1 · difficulty switching · same-level next puzzle</div>
+<div class="bottom">v0.7 · handwritten notes · candidate cleanup · mistake checking</div>
 </div>
 
 <div class="modal" id="modal">
@@ -136,7 +144,7 @@ const GAME_KEY='sudokuPencilGameV06';
 const STATS_KEY='sudokuPencilStatsV06';
 
 const board=document.getElementById('board'),ctx=board.getContext('2d');
-let size=0,cells=Array.from({length:81},()=>[]),undo=[],redo=[],stroke=null,active=-1,selected=-1,erase=false,recognized={},recognizeTimer=null,feedbackTimer=null;
+let size=0,cells=Array.from({length:81},()=>[]),notes=Array.from({length:81},()=>[]),undo=[],redo=[],stroke=null,active=-1,selected=-1,erase=false,notesMode=false,recognized={},recognizeTimer=null,feedbackTimer=null,mistakeMode='off';
 let puzzle=Array.from({length:9},()=>Array(9).fill(0)),solution=Array.from({length:9},()=>Array(9).fill(0)),difficulty='Medium',seconds=0,timerId=null,completed=false;
 
 let training={};try{training=JSON.parse(localStorage.getItem(TRAINING_KEY)||'{}')}catch(e){training={}}
@@ -169,18 +177,18 @@ function makePuzzle(diff){
  return {p,sol}
 }
 
-function snap(){return{cells:cells.map(a=>a.map(s=>s.map(p=>({...p})))),recognized:{...recognized}}}
-function restore(s){cells=s.cells.map(a=>a.map(st=>st.map(p=>({...p}))));recognized={...s.recognized}}
+function snap(){return{cells:cells.map(a=>a.map(s=>s.map(p=>({...p})))),notes:notes.map(a=>a.map(s=>s.map(p=>({...p})))),recognized:{...recognized}}}
+function restore(s){cells=s.cells.map(a=>a.map(st=>st.map(p=>({...p}))));notes=(s.notes||Array.from({length:81},()=>[])).map(a=>a.map(st=>st.map(p=>({...p}))));recognized={...s.recognized}}
 function save(){undo.push(snap());if(undo.length>60)undo.shift();redo=[]}
 
 function saveGame(){
- const data={version:'0.6',difficulty,puzzle,solution,cells,recognized,seconds,completed,savedAt:new Date().toISOString()};
+ const data={version:'0.7',difficulty,puzzle,solution,cells,notes,recognized,seconds,completed,mistakeMode,savedAt:new Date().toISOString()};
  localStorage.setItem(GAME_KEY,JSON.stringify(data));setSavedState()
 }
 function loadGame(){
  try{
   const d=JSON.parse(localStorage.getItem(GAME_KEY)||'null');if(!d)return false;
-  difficulty=d.difficulty||'Medium';puzzle=d.puzzle;solution=d.solution;cells=d.cells||Array.from({length:81},()=>[]);recognized=d.recognized||{};seconds=d.seconds||0;completed=!!d.completed;
+  difficulty=d.difficulty||'Medium';puzzle=d.puzzle;solution=d.solution;cells=d.cells||Array.from({length:81},()=>[]);notes=d.notes||Array.from({length:81},()=>[]);recognized=d.recognized||{};seconds=d.seconds||0;completed=!!d.completed;mistakeMode=d.mistakeMode||'off';document.getElementById('mistakeMode').value=mistakeMode;
   setDifficultyUI(difficulty);document.getElementById('difficultyLabel').textContent=difficulty;document.getElementById('timer').textContent=formatTime(seconds);draw();showFeedback('Saved game resumed','good');return true
  }catch(e){return false}
 }
@@ -190,7 +198,7 @@ function setDifficultyUI(diff){
  document.querySelectorAll('.difficulty-btn').forEach(b=>b.classList.toggle('active',b.dataset.diff===diff));
 }
 function newPuzzle(){
- const g=makePuzzle(difficulty);puzzle=g.p;solution=g.sol;cells=Array.from({length:81},()=>[]);recognized={};selected=-1;seconds=0;completed=false;undo=[];redo=[];
+ const g=makePuzzle(difficulty);puzzle=g.p;solution=g.sol;cells=Array.from({length:81},()=>[]);notes=Array.from({length:81},()=>[]);recognized={};selected=-1;seconds=0;completed=false;undo=[];redo=[];
  document.getElementById('difficultyLabel').textContent=difficulty;document.getElementById('timer').textContent='00:00';draw();saveGame();showFeedback(`${difficulty} puzzle ready`,'good')
 }
 
@@ -199,6 +207,18 @@ new ResizeObserver(resize).observe(board.parentElement);
 function draw(){
  let c=size/9;ctx.clearRect(0,0,size,size);ctx.fillStyle='#fffdf9';ctx.fillRect(0,0,size,size);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`600 ${Math.round(c*.31)}px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial`;
  for(let r=0;r<9;r++)for(let x=0;x<9;x++)if(puzzle[r][x]){ctx.fillStyle='#77736a';ctx.fillText(puzzle[r][x],x*c+c/2,r*c+c/2)}
+ ctx.strokeStyle='#6f6a61';ctx.lineCap='round';ctx.lineJoin='round';
+ for(let i=0;i<81;i++){
+   let r=Math.floor(i/9),x=i%9;
+   for(const s of notes[i]){
+     if(s.length<2)continue;
+     ctx.lineWidth=Math.max(1,c*.013);
+     ctx.beginPath();
+     ctx.moveTo(x*c+s[0].x*.45+c*.08,r*c+s[0].y*.45+c*.08);
+     for(let k=1;k<s.length;k++)ctx.lineTo(x*c+s[k].x*.45+c*.08,r*c+s[k].y*.45+c*.08);
+     ctx.stroke();
+   }
+ }
  ctx.strokeStyle='#222';ctx.lineCap='round';ctx.lineJoin='round';
  for(let i=0;i<81;i++){let r=Math.floor(i/9),x=i%9;for(const s of cells[i]){if(s.length<2)continue;ctx.lineWidth=s.w||Math.max(2,c*.026);ctx.beginPath();ctx.moveTo(x*c+s[0].x,r*c+s[0].y);for(let k=1;k<s.length;k++)ctx.lineTo(x*c+s[k].x,r*c+s[k].y);ctx.stroke()}}
  if(selected>=0){ctx.strokeStyle='#9aaed4';ctx.lineWidth=2;ctx.strokeRect(selected%9*c+3,Math.floor(selected/9)*c+3,c-6,c-6)}
@@ -206,9 +226,12 @@ function draw(){
  ctx.strokeStyle='#37352f';ctx.lineWidth=2;ctx.strokeRect(1,1,size-2,size-2)
 }
 function point(e){let r=board.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}function cellAt(p){let c=Math.floor(p.x/(size/9)),r=Math.floor(p.y/(size/9));return r>=0&&r<9&&c>=0&&c<9?r*9+c:-1}
-board.addEventListener('pointerdown',e=>{clearTimeout(recognizeTimer);let p=point(e),i=cellAt(p);if(i<0||puzzle[Math.floor(i/9)][i%9])return;selected=i;save();if(erase){cells[i]=[];delete recognized[i];draw();saveGame();showFeedback('Cell erased','warn');return}let c=size/9,x=i%9,r=Math.floor(i/9);stroke=[{x:p.x-x*c,y:p.y-r*c}];stroke.w=Math.max(2,c*.026);cells[i].push(stroke);active=i;board.setPointerCapture(e.pointerId);draw()});
+board.addEventListener('pointerdown',e=>{clearTimeout(recognizeTimer);let p=point(e),i=cellAt(p);if(i<0||puzzle[Math.floor(i/9)][i%9])return;selected=i;save();if(erase){cells[i]=[];notes[i]=[];delete recognized[i];draw();saveGame();showFeedback('Cell erased','warn');return}
+let c=size/9,x=i%9,r=Math.floor(i/9);stroke=[{x:p.x-x*c,y:p.y-r*c}];stroke.w=Math.max(2,c*.026);
+if(notesMode){notes[i].push(stroke)}else{cells[i].push(stroke)}
+active=i;board.setPointerCapture(e.pointerId);draw()});
 board.addEventListener('pointermove',e=>{if(!stroke)return;let p=point(e),c=size/9,x=active%9,r=Math.floor(active/9);stroke.push({x:p.x-x*c,y:p.y-r*c});draw()});
-function endStroke(){let ended=active;stroke=null;active=-1;if(ended>=0){showFeedback('Reading…','warn',900);recognizeTimer=setTimeout(()=>recognizeCell(ended),850);saveGame()}}
+function endStroke(){let ended=active;stroke=null;active=-1;if(ended>=0){if(notesMode){showFeedback('Note added','good',900)}else{showFeedback('Reading…','warn',900);recognizeTimer=setTimeout(()=>recognizeCell(ended),850)}saveGame()}}
 board.addEventListener('pointerup',endStroke);board.addEventListener('pointercancel',endStroke);
 
 function rasterize(strokes,N=48){const cv=document.createElement('canvas');cv.width=cv.height=N;const g=cv.getContext('2d');g.fillStyle='black';g.fillRect(0,0,N,N);g.strokeStyle='white';g.lineCap='round';g.lineJoin='round';let pts=[];for(const s of strokes)for(const p of s)pts.push(p);if(!pts.length)return new Float32Array(N*N);let minX=Math.min(...pts.map(p=>p.x)),maxX=Math.max(...pts.map(p=>p.x)),minY=Math.min(...pts.map(p=>p.y)),maxY=Math.max(...pts.map(p=>p.y));let w=Math.max(1,maxX-minX),h=Math.max(1,maxY-minY),scale=(N*.72)/Math.max(w,h),ox=(N-w*scale)/2-minX*scale,oy=(N-h*scale)/2-minY*scale;g.lineWidth=Math.max(2,N*.075);for(const s of strokes){if(s.length<2)continue;g.beginPath();g.moveTo(s[0].x*scale+ox,s[0].y*scale+oy);for(let k=1;k<s.length;k++)g.lineTo(s[k].x*scale+ox,s[k].y*scale+oy);g.stroke()}const img=g.getImageData(0,0,N,N).data,out=new Float32Array(N*N);for(let i=0;i<N*N;i++)out[i]=img[i*4]/255;return out}
@@ -218,7 +241,40 @@ rebuildRasters();
 function classify(strokes){const q=rasterize(strokes),scores=[];for(let d=1;d<=9;d++){if(!trainingRasters[d].length)continue;let ds=trainingRasters[d].map(r=>distance(q,r)).sort((a,b)=>a-b);let score=(ds[0]+(ds[1]??ds[0]))/2;scores.push({digit:d,score})}scores.sort((a,b)=>a.score-b.score);if(!scores.length)return null;let best=scores[0],second=scores[1]||{score:best.score+.2,digit:best.digit},third=scores[2]||second;let margin=(second.score-best.score)/Math.max(second.score,.0001),confidence=Math.max(0,Math.min(.99,.58+margin*1.55-best.score*.35));return{best,second,third,confidence}}
 function cloneStrokes(strokes){return strokes.map(stroke=>stroke.map(p=>({x:p.x,y:p.y})))}
 function saveAdaptiveSample(digit,strokes){adaptive[digit].push(cloneStrokes(strokes));if(adaptive[digit].length>60)adaptive[digit]=adaptive[digit].slice(-60);localStorage.setItem(ADAPTIVE_KEY,JSON.stringify(adaptive));rebuildRasters();document.getElementById('correctionCount').textContent=Object.values(adaptive).reduce((n,a)=>n+a.length,0)}
-function commitRecognition(cell,digit,detail){recognized[cell]=digit;document.getElementById('lastGuess').textContent=digit;document.getElementById('lastDetail').textContent=detail;showFeedback(`Recognized: ${digit}`,'good');saveGame();checkCompletion()}
+function hasConflict(cell,digit){
+ const r=Math.floor(cell/9),c=cell%9;
+ for(let x=0;x<9;x++){let i=r*9+x;if(i!==cell&&Number(recognized[i])===digit)return true}
+ for(let y=0;y<9;y++){let i=y*9+c;if(i!==cell&&Number(recognized[i])===digit)return true}
+ const br=Math.floor(r/3)*3,bc=Math.floor(c/3)*3;
+ for(let y=br;y<br+3;y++)for(let x=bc;x<bc+3;x++){let i=y*9+x;if(i!==cell&&Number(recognized[i])===digit)return true}
+ return false
+}
+function cleanupNotes(cell,digit){
+ const r=Math.floor(cell/9),c=cell%9,targets=new Set();
+ for(let x=0;x<9;x++)targets.add(r*9+x);
+ for(let y=0;y<9;y++)targets.add(y*9+c);
+ const br=Math.floor(r/3)*3,bc=Math.floor(c/3)*3;
+ for(let y=br;y<br+3;y++)for(let x=bc;x<bc+3;x++)targets.add(y*9+x);
+ for(const i of targets){
+   if(i===cell)continue;
+   if(Number(recognized[i])===digit)continue;
+   if(notes[i].length){notes[i]=[]}
+ }
+}
+function commitRecognition(cell,digit,detail){
+ if(mistakeMode==='conflict'&&hasConflict(cell,digit)){showFeedback(`Conflict: another ${digit} is already in this row, column, or box`,'warn',2600)}
+ if(mistakeMode==='solution'){
+   const r=Math.floor(cell/9),c=cell%9;
+   if(Number(solution[r][c])!==Number(digit)){showFeedback(`That ${digit} does not match the solution`,'warn',2600)}
+ }
+ recognized[cell]=digit;
+ notes[cell]=[];
+ cleanupNotes(cell,digit);
+ document.getElementById('lastGuess').textContent=digit;
+ document.getElementById('lastDetail').textContent=detail;
+ if(mistakeMode==='off')showFeedback(`Recognized: ${digit}`,'good');
+ draw();saveGame();checkCompletion()
+}
 function showChoices(cell,result){const modal=document.getElementById('modal'),row=document.getElementById('choices');row.innerHTML='';document.getElementById('modalText').textContent=`Best guess: ${result.best.digit}. Tap the digit you actually wrote.`;for(let d=1;d<=9;d++){let b=document.createElement('button');b.className='choice'+(d===result.best.digit?' guess':'');b.textContent=d;b.onclick=()=>{if(d!==result.best.digit)saveAdaptiveSample(d,cells[cell]);commitRecognition(cell,d,d===result.best.digit?'Confirmed by you':`Corrected from ${result.best.digit} to ${d} · learned`);modal.classList.remove('show')};row.appendChild(b)}modal.classList.add('show')}
 function recognizeCell(cell){try{if(cell<0||!cells[cell].length)return;const result=classify(cells[cell]);if(!result){showFeedback('Could not read that digit','warn');return}const pct=Math.round(result.confidence*100);if(result.confidence>=.92){commitRecognition(cell,result.best.digit,`Accepted automatically · ${pct}%`)}else{document.getElementById('lastGuess').textContent=result.confidence>=.75?`${result.best.digit}?`:'Unsure';document.getElementById('lastDetail').textContent=`Confidence ${pct}%`;showChoices(cell,result)}}catch(err){console.error(err);showFeedback('Recognition error','warn',2500)}}
 function forceCorrection(){if(selected<0||!cells[selected].length){showFeedback('Select a written cell first','warn');return}const r=classify(cells[selected]);if(r)showChoices(selected,r)}
@@ -228,13 +284,20 @@ function checkCompletion(){
  completed=true;clearInterval(timerId);stats.solved++;if(stats.best==null||seconds<stats.best)stats.best=seconds;localStorage.setItem(STATS_KEY,JSON.stringify(stats));document.getElementById('solvedCount').textContent=stats.solved;document.getElementById('bestTime').textContent=formatTime(stats.best);saveGame();document.getElementById('completeText').textContent=`You solved this ${difficulty} puzzle in ${formatTime(seconds)}.`;document.getElementById('completeModal').classList.add('show');return true
 }
 
-function setErase(v){erase=v;document.getElementById('erase').classList.toggle('selected',erase);document.getElementById('pencil').classList.toggle('selected',!erase)}
+function syncModeButtons(){
+ document.getElementById('notesMode').classList.toggle('selected',notesMode);
+ document.getElementById('mobileNotes').classList.toggle('active',notesMode);
+ document.getElementById('mobilePencil').classList.toggle('active',!notesMode&&!erase);
+ document.getElementById('mobileErase').classList.toggle('active',erase);
+}
+function setNotesMode(v){notesMode=v;erase=false;document.getElementById('erase').classList.remove('selected');document.getElementById('pencil').classList.toggle('selected',!notesMode);syncModeButtons();showFeedback(notesMode?'Notes mode':'Pencil mode',notesMode?'warn':'good',1000)}
+function setErase(v){erase=v;if(v)notesMode=false;document.getElementById('erase').classList.toggle('selected',erase);document.getElementById('pencil').classList.toggle('selected',!erase&&!notesMode);document.getElementById('notesMode').classList.toggle('selected',notesMode);syncModeButtons()}
 document.getElementById('recognizeNow').onclick=()=>recognizeCell(selected);
 document.getElementById('mobileRecognize').onclick=()=>recognizeCell(selected);
 document.getElementById('correctLast').onclick=forceCorrection;document.getElementById('mobileCorrect').onclick=forceCorrection;
-document.getElementById('erase').onclick=()=>setErase(!erase);document.getElementById('pencil').onclick=()=>setErase(false);
-document.getElementById('mobileErase').onclick=()=>{setErase(true);showFeedback('Eraser on','warn')};document.getElementById('mobilePencil').onclick=()=>{setErase(false);showFeedback('Pencil on','good')};
-document.getElementById('clear').onclick=()=>{save();cells=Array.from({length:81},()=>[]);recognized={};selected=-1;draw();saveGame();showFeedback('Entries cleared','warn')};
+document.getElementById('erase').onclick=()=>setErase(!erase);document.getElementById('pencil').onclick=()=>{setErase(false);setNotesMode(false)};document.getElementById('notesMode').onclick=()=>setNotesMode(!notesMode);
+document.getElementById('mobileErase').onclick=()=>{setErase(true);showFeedback('Eraser on','warn')};document.getElementById('mobilePencil').onclick=()=>{setErase(false);setNotesMode(false)};document.getElementById('mobileNotes').onclick=()=>setNotesMode(!notesMode);
+document.getElementById('clear').onclick=()=>{save();cells=Array.from({length:81},()=>[]);notes=Array.from({length:81},()=>[]);recognized={};selected=-1;draw();saveGame();showFeedback('Entries cleared','warn')};
 document.getElementById('undo').onclick=()=>{if(undo.length){redo.push(snap());restore(undo.pop());draw();saveGame()}};
 document.getElementById('redo').onclick=()=>{if(redo.length){undo.push(snap());restore(redo.pop());draw();saveGame()}};
 document.getElementById('new').onclick=newPuzzle;document.getElementById('mobileNew').onclick=newPuzzle;
@@ -248,10 +311,11 @@ document.querySelectorAll('.difficulty-btn').forEach(btn=>{
    startTimer();
  });
 });
+document.getElementById('mistakeMode').onchange=e=>{mistakeMode=e.target.value;saveGame();showFeedback(`Mistake checking: ${e.target.options[e.target.selectedIndex].text}`,'good',1500)};
 document.getElementById('newAfterComplete').onclick=()=>{document.getElementById('completeModal').classList.remove('show');newPuzzle();startTimer();showFeedback(`New ${difficulty} puzzle ready`,'good')};
 document.getElementById('keepComplete').onclick=()=>document.getElementById('completeModal').classList.remove('show');
 
-if(!loadGame())newPuzzle();setDifficultyUI(difficulty);startTimer();resize();
+if(!loadGame())newPuzzle();setDifficultyUI(difficulty);document.getElementById('mistakeMode').value=mistakeMode;syncModeButtons();startTimer();resize();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
