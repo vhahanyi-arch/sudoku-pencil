@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#f7f5ef">
 <link rel="manifest" href="manifest.json">
-<title>Sudoku Pencil v0.6</title>
+<title>Sudoku Pencil v0.6.1</title>
 <style>
 :root{--paper:#f7f5ef;--ink:#242424;--muted:#77736a;--heavy:#37352f;--panel:#efede6}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -22,7 +22,7 @@ body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:i
 .panel h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 12px;color:var(--muted)}
 .panel button,.panel select{display:block;width:100%;text-align:left;padding:10px 8px;border-radius:10px}
 .panel button:hover{background:#e4e1d8}.selected{background:#e0ddd4!important}
-.panel select{border:1px solid #d8d3c8;background:white;font-size:14px}
+.panel select{border:1px solid #d8d3c8;background:white;font-size:14px}.difficulty-tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}.difficulty-btn{padding:10px 8px!important;text-align:center!important;background:#e8e5dc;border-radius:10px!important}.difficulty-btn.active{background:#fff!important;box-shadow:0 1px 5px #00000018;font-weight:600}
 .stats{border-top:1px solid #d8d5cc;margin-top:15px;padding-top:15px;font-size:13px;line-height:1.8}
 .boardwrap{position:relative;width:min(78vw,78vh,760px);aspect-ratio:1}
 #board{width:100%;height:100%;display:block;background:#fffdf9;border:2px solid var(--heavy);touch-action:none;box-shadow:0 4px 18px #0000000d}
@@ -62,17 +62,16 @@ body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:i
 <main class="content">
   <aside class="panel">
     <h3>Puzzle</h3>
-    <label class="muted" for="difficulty">Difficulty</label>
-    <select id="difficulty">
-      <option>Easy</option>
-      <option selected>Medium</option>
-      <option>Hard</option>
-      <option>Expert</option>
-    </select>
+    <div class="difficulty-tabs" id="difficultyTabs">
+      <button class="difficulty-btn" data-diff="Easy">Easy</button>
+      <button class="difficulty-btn active" data-diff="Medium">Medium</button>
+      <button class="difficulty-btn" data-diff="Hard">Hard</button>
+      <button class="difficulty-btn" data-diff="Expert">Expert</button>
+    </div>
     <button id="new">＋ New puzzle</button>
     <button id="resume">↻ Resume saved game</button>
     <div class="stats">
-      Version&nbsp;&nbsp;0.6<br>
+      Version&nbsp;&nbsp;0.6.1<br>
       Solved&nbsp;&nbsp;<span id="solvedCount">0</span><br>
       Best time&nbsp;&nbsp;<span id="bestTime">—</span><br>
       Adaptive corrections&nbsp;&nbsp;<span id="correctionCount">0</span>
@@ -108,7 +107,7 @@ body{overflow:hidden}button{font:inherit;border:0;background:transparent;color:i
   </aside>
 </main>
 
-<div class="bottom">v0.6 · fresh puzzles · completion detection · save & resume</div>
+<div class="bottom">v0.6.1 · difficulty switching · same-level next puzzle</div>
 </div>
 
 <div class="modal" id="modal">
@@ -182,11 +181,16 @@ function loadGame(){
  try{
   const d=JSON.parse(localStorage.getItem(GAME_KEY)||'null');if(!d)return false;
   difficulty=d.difficulty||'Medium';puzzle=d.puzzle;solution=d.solution;cells=d.cells||Array.from({length:81},()=>[]);recognized=d.recognized||{};seconds=d.seconds||0;completed=!!d.completed;
-  document.getElementById('difficulty').value=difficulty;document.getElementById('difficultyLabel').textContent=difficulty;document.getElementById('timer').textContent=formatTime(seconds);draw();showFeedback('Saved game resumed','good');return true
+  setDifficultyUI(difficulty);document.getElementById('difficultyLabel').textContent=difficulty;document.getElementById('timer').textContent=formatTime(seconds);draw();showFeedback('Saved game resumed','good');return true
  }catch(e){return false}
 }
+function setDifficultyUI(diff){
+ difficulty=diff;
+ document.getElementById('difficultyLabel').textContent=diff;
+ document.querySelectorAll('.difficulty-btn').forEach(b=>b.classList.toggle('active',b.dataset.diff===diff));
+}
 function newPuzzle(){
- difficulty=document.getElementById('difficulty').value;const g=makePuzzle(difficulty);puzzle=g.p;solution=g.sol;cells=Array.from({length:81},()=>[]);recognized={};selected=-1;seconds=0;completed=false;undo=[];redo=[];
+ const g=makePuzzle(difficulty);puzzle=g.p;solution=g.sol;cells=Array.from({length:81},()=>[]);recognized={};selected=-1;seconds=0;completed=false;undo=[];redo=[];
  document.getElementById('difficultyLabel').textContent=difficulty;document.getElementById('timer').textContent='00:00';draw();saveGame();showFeedback(`${difficulty} puzzle ready`,'good')
 }
 
@@ -235,11 +239,19 @@ document.getElementById('undo').onclick=()=>{if(undo.length){redo.push(snap());r
 document.getElementById('redo').onclick=()=>{if(redo.length){undo.push(snap());restore(redo.pop());draw();saveGame()}};
 document.getElementById('new').onclick=newPuzzle;document.getElementById('mobileNew').onclick=newPuzzle;
 document.getElementById('resume').onclick=()=>{if(!loadGame())showFeedback('No saved game found','warn')};
-document.getElementById('difficulty').onchange=e=>{document.getElementById('difficultyLabel').textContent=e.target.value};
-document.getElementById('newAfterComplete').onclick=()=>{document.getElementById('completeModal').classList.remove('show');newPuzzle();startTimer()};
+document.querySelectorAll('.difficulty-btn').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+   const next=btn.dataset.diff;
+   if(next===difficulty && !completed){showFeedback(`${next} already selected`,'good');return}
+   setDifficultyUI(next);
+   newPuzzle();
+   startTimer();
+ });
+});
+document.getElementById('newAfterComplete').onclick=()=>{document.getElementById('completeModal').classList.remove('show');newPuzzle();startTimer();showFeedback(`New ${difficulty} puzzle ready`,'good')};
 document.getElementById('keepComplete').onclick=()=>document.getElementById('completeModal').classList.remove('show');
 
-if(!loadGame())newPuzzle();startTimer();resize();
+if(!loadGame())newPuzzle();setDifficultyUI(difficulty);startTimer();resize();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
