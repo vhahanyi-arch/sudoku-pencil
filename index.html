@@ -37,7 +37,7 @@
 <script>
 (() => {
   'use strict';
-  const VERSION='0.8.1', LEVELS=['Easy','Medium','Hard','Expert'];
+  const VERSION='0.8.1', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
   const K={games:'sp-games-v081',prefs:'sp-prefs-v081',stats:'sp-stats-v081',learn:'sp-learn-v081'};
   const $=s=>document.querySelector(s), board=$('#board'), status=$('#status');
   let state, selected=-1, drawing=false, activeStroke=[], timerId;
@@ -66,7 +66,7 @@
   function select(i){selected=i;renderHighlights();drawCell(i)}
   function renderHighlights(){document.querySelectorAll('.cell').forEach((el,i)=>{el.classList.remove('selected','peer');if(selected<0)return;const sr=Math.floor(selected/9),sc=selected%9,r=Math.floor(i/9),c=i%9,sb=Math.floor(sr/3)*3+Math.floor(sc/3),b=Math.floor(r/3)*3+Math.floor(c/3);if(i===selected)el.classList.add('selected');else if(r===sr||c===sc||b===sb)el.classList.add('peer')})}
   function preview(i){drawCell(i,activeStroke)}
-  function finishStroke(i){if(activeStroke.length<2)return;const cell=state.cells[i];if(cell.error){cell.pending.strokes.push(activeStroke)}else{cell.pending=cell.pending||{strokes:[],digit:0};cell.pending.strokes.push(activeStroke)}drawCell(i);clearTimeout(cell._recognize);cell._recognize=setTimeout(()=>recognizeAndApply(i),430)}
+  function finishStroke(i){if(activeStroke.length<2)return;const cell=state.cells[i];if(cell.error){cell.pending.strokes.push(activeStroke)}else{cell.pending=cell.pending||{strokes:[],digit:0};cell.pending.strokes.push(activeStroke)}drawCell(i);clearTimeout(cell._recognize);announce('Stroke captured — keep writing, or pause to recognize');cell._recognize=setTimeout(()=>recognizeAndApply(i),MULTI_STROKE_PAUSE)}
   function darkness(ctx){const d=ctx.getImageData(0,0,28,28).data,out=[];for(let i=0;i<d.length;i+=4)out.push(1-(d[i]+d[i+1]+d[i+2])/765);return out}
   function bitmap(strokes){const cv=document.createElement('canvas');cv.width=cv.height=28;const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,28,28);if(!strokes.length)return new Array(784).fill(0);let pts=strokes.flat(),xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),minx=Math.min(...xs),maxx=Math.max(...xs),miny=Math.min(...ys),maxy=Math.max(...ys),scale=20/Math.max(maxx-minx,maxy-miny,.05),ox=14-(minx+maxx)*scale/2,oy=14-(miny+maxy)*scale/2;x.strokeStyle='#000';x.lineWidth=3;x.lineCap=x.lineJoin='round';for(const s of strokes){x.beginPath();s.forEach((p,j)=>(j?x.lineTo(p[0]*scale+ox,p[1]*scale+oy):x.moveTo(p[0]*scale+ox,p[1]*scale+oy)));x.stroke()}return darkness(x)}
   function templates(){if(templates.cache)return templates.cache;const out={};for(let n=1;n<=9;n++){out[n]=[];for(const font of ['bold 23px Arial','24px Georgia','bold 24px Comic Sans MS']){const c=document.createElement('canvas');c.width=c.height=28;const x=c.getContext('2d');x.fillStyle='white';x.fillRect(0,0,28,28);x.fillStyle='black';x.font=font;x.textAlign='center';x.textBaseline='middle';x.fillText(n,14,15);out[n].push(darkness(x))}for(const sample of (learned[n]||[]))out[n].push(sample)}return templates.cache=out}
