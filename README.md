@@ -1,6 +1,12 @@
-# Sudoku Pencil v0.9.1 — Ink & clarity
+# Sudoku Pencil v0.9.2 — Continuous ink
 
-Upload index.html, manifest.json, sw.js and README.md to the same GitHub Pages repository and path as before. Open the site online and refresh; check for v0.9.1 in the header. Existing v0.9 profiles, learning, games and stats use the same storage key. Do not clear site data when upgrading. Keep a copy of your previous release.
+## Short-stroke fix
+
+Pencil contacts and short moving strokes are now kept when you lift the Pencil, on both the board and the training canvas. A small starting mark for 1 or 7 is no longer discarded by the whole-digit length check. Stationary Pencil dots are rendered and saved too. Finish your digit, then tap its number to confirm. For unrestricted pauses between strokes, leave Recognized answers set to Always confirm.
+
+Upload the four files from this archive and refresh until v0.9.2 appears. Existing profiles and saves remain in place. Tested with browser-emulated pen input; physical iPad Pencil behavior still needs your feedback.
+
+Upload index.html, manifest.json, sw.js and README.md to the same GitHub Pages repository and path as before. Open the site online and refresh; check for v0.9.2 in the header. Existing v0.9 profiles, learning, games and stats use the same storage key. Do not clear site data when upgrading. Keep a copy of your previous release.
 
 ## Writing
 
