@@ -1,9 +1,19 @@
-# Sudoku Pencil v0.9.4 — Graded puzzles
+# Sudoku Pencil v0.9.5 — Write at your pace
+
+## New writing flow
+There is no Pencil-up recognition timer. All strokes remain editable while you stay in their cell, however long you pause. Selecting a DIFFERENT cell finishes the previous digit: a strong personal match is saved, while an uncertain match remains marked in amber for confirmation. Mistake checking still rejects incorrect answers and preserves their ink.
+
+Tap Finish digit to finish without leaving the cell, especially on your last answer. You can also explicitly confirm a number using the number strip at any time. Tapping the same cell does not finalize it. Leaving a cell does not train the recognizer automatically; explicit digit confirmations teach your profile.
+
+This update enables Save strong matches on cell change for existing profiles on first use. Always confirm remains available under Writing & display settings and will be remembered after you choose it. Pausing, switching profiles or reloading preserves pending ink without committing it. Select that cell to continue writing.
+
+Browser tests verify long inter-stroke pauses, same-cell taps, confident and uncertain departure, Finish digit, final puzzle completion, persisted settings and pending ink. Physical Apple Pencil testing is still needed.
+
 
 ## Install
 Upload all SIX files in this ZIP to the same GitHub Pages folder:
 index.html, manifest.json, sw.js, engine.js, puzzles.js and README.md.
-The two new JavaScript files are required. Refresh online until v0.9.4 appears.
+The two new JavaScript files are required. Refresh online until v0.9.5 appears.
 Do not clear browser data: existing profiles, handwriting samples, games and statistics use the same storage keys.
 
 ## Difficulty
