@@ -1,4 +1,25 @@
-# Sudoku Pencil v0.9.2 — Continuous ink
+# Sudoku Pencil v0.9.3 — Completion fix
+
+Upload the four files in this release to the existing Pages location. Refresh until v0.9.3 appears. The notes below describing v0.9.2 remain as change history.
+
+## Completion
+
+Completion checks all rows, columns and boxes after a final answer and when resuming saved games. Confirmed complete games freeze the timer, disable editing and record statistics once. Check completion locates unconfirmed or empty cells; a visually full board with pending handwriting is not yet complete. The remaining-cell counter now updates after entries. Browser tests cover final confirmation, frozen time, editing locks, reload, duplicate-stat prevention and repairing completed legacy saves.
+
+## Difficulty review — September 10, 2026
+
+Difficulty generation is unchanged in this release. Labels are currently driven by target clue counts, not the computed logical score. The logical solver handles naked singles and hidden singles, then adds a penalty for unresolved cells. It does not assess advanced techniques.
+
+A random sample of 30 puzzles per level produced:
+
+| Level | Clues | Score range | Median score |
+|---|---|---|---|
+| Easy | 42 | 39–39 | 39 |
+| Medium | 34 | 47–69 | 47 |
+| Hard | 29 | 52–537 | 68 |
+| Expert | 25–26 | 64–645 | 306 |
+
+All 120 puzzles had exactly one solution. These are sample results, not fixed boundaries or human difficulty ratings. Hard and Expert overlap substantially. Recommended future change: grade generated puzzles by required techniques (singles, hidden singles, locked candidates, pairs and harder techniques), accept only puzzles matching a defined tier, and validate those tiers through playtesting. The current generator also begins from permutations of a patterned solution grid, limiting structural variety.
 
 ## Short-stroke fix
 
