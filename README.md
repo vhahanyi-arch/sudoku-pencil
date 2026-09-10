@@ -1,52 +1,37 @@
-# Sudoku Pencil v0.9.3 — Completion fix
+# Sudoku Pencil v0.9.4 — Graded puzzles
 
-Upload the four files in this release to the existing Pages location. Refresh until v0.9.3 appears. The notes below describing v0.9.2 remain as change history.
+## Install
+Upload all SIX files in this ZIP to the same GitHub Pages folder:
+index.html, manifest.json, sw.js, engine.js, puzzles.js and README.md.
+The two new JavaScript files are required. Refresh online until v0.9.4 appears.
+Do not clear browser data: existing profiles, handwriting samples, games and statistics use the same storage keys.
 
-## Completion
+## Difficulty
+New puzzles are graded by a deterministic logical solver, rather than by clue count.
 
-Completion checks all rows, columns and boxes after a final answer and when resuming saved games. Confirmed complete games freeze the timer, disable editing and record statistics once. Check completion locates unconfirmed or empty cells; a visually full board with pending handwriting is not yet complete. The remaining-cell counter now updates after entries. Browser tests cover final confirmation, frozen time, editing locks, reload, duplicate-stat prevention and repairing completed legacy saves.
+| Level | Requirement |
+|---|---|
+| Easy | Solved entirely with naked singles: a cell has just one candidate. |
+| Medium | Needs hidden singles: a digit has only one possible cell in a row, column or box. |
+| Hard | Needs locked candidates and/or naked pairs, and is solved using those techniques plus singles. |
+| Expert | Remains unresolved after singles, locked candidates and naked pairs. |
 
-## Difficulty review — September 10, 2026
+Expert means beyond the techniques implemented by this grader. It does not mean guessing is necessary, nor certify any particular advanced technique. Ratings are app-specific, not a universal measure of human difficulty. Solver order and the techniques it supports affect the classification.
 
-Difficulty generation is unchanged in this release. Labels are currently driven by target clue counts, not the computed logical score. The logical solver handles naked singles and hidden singles, then adds a penalty for unresolved cells. It does not assess advanced techniques.
+## Generation and variety
+The release includes 48 verified seeds, 12 per level, created from randomized backtracking solution grids. New games shuffle digits, rows within bands, columns within stacks, bands and stacks, and may transpose the board. These transformations preserve a unique solution. Every generated variant is regraded before display so it matches the selected tier. The previous identical board is avoided during normal generation.
 
-A random sample of 30 puzzles per level produced:
+The seed bank keeps generation fast and offline. Variants of one seed retain related logical structure: this is not an unlimited source of structurally independent puzzles.
 
-| Level | Clues | Score range | Median score |
-|---|---|---|---|
-| Easy | 42 | 39–39 | 39 |
-| Medium | 34 | 47–69 | 47 |
-| Hard | 29 | 52–537 | 68 |
-| Expert | 25–26 | 64–645 | 306 |
-
-All 120 puzzles had exactly one solution. These are sample results, not fixed boundaries or human difficulty ratings. Hard and Expert overlap substantially. Recommended future change: grade generated puzzles by required techniques (singles, hidden singles, locked candidates, pairs and harder techniques), accept only puzzles matching a defined tier, and validate those tiers through playtesting. The current generator also begins from permutations of a patterned solution grid, limiting structural variety.
-
-## Short-stroke fix
-
-Pencil contacts and short moving strokes are now kept when you lift the Pencil, on both the board and the training canvas. A small starting mark for 1 or 7 is no longer discarded by the whole-digit length check. Stationary Pencil dots are rendered and saved too. Finish your digit, then tap its number to confirm. For unrestricted pauses between strokes, leave Recognized answers set to Always confirm.
-
-Upload the four files from this archive and refresh until v0.9.2 appears. Existing profiles and saves remain in place. Tested with browser-emulated pen input; physical iPad Pencil behavior still needs your feedback.
-
-Upload index.html, manifest.json, sw.js and README.md to the same GitHub Pages repository and path as before. Open the site online and refresh; check for v0.9.2 in the header. Existing v0.9 profiles, learning, games and stats use the same storage key. Do not clear site data when upgrading. Keep a copy of your previous release.
-
-## Writing
-
-Write your complete digit, including all strokes, then tap its number in the confirmation strip. This is now the default for each profile. Your handwriting stays visible and is saved while awaiting confirmation. Each confirmed example teaches that profile. Saved answers remain locked until erased.
-
-Writing & display settings offers optional Auto-save strong matches. Uncertain matches still require confirmation. Recognition uses personal examples, tolerates small positional shifts, and can use the first corrected sample. Printed-font examples remain a fallback. There is no cloud service, trained neural model or guaranteed recognition accuracy; actual improvement needs testing with your handwriting.
-
-The second-stroke timer is cancelled on Pencil-down. Taps no longer become digits, pending strokes remain visible, and queued recognition is cancelled when changing games/profiles, pausing, or erasing. Notes are checked as candidate notes rather than as final answers.
-
-## Personal handwriting setup
-
-In Profiles choose Redo handwriting setup. Write 1 through 9 twice each. Tap Use this sample only when the complete digit is on screen. Clear retries the current sample. Skipping leaves previous learning intact; new examples replace it only when all 18 samples are accepted. Games and statistics are preserved.
-
-## Display
-
-Darker printed digits, a green selection outline, gold matching-digit emphasis, an amber pending-ink marker, and persistent red mistake outlines retain the cream-paper appearance. Settings are collapsible and controls fit narrow screens.
+Existing saved games are preserved and display “Earlier puzzle · original difficulty label.” Start a new puzzle to use the new grading.
 
 ## Verification
+- 400 generated variants, 100 per tier: all matched their grading rules and were distinct within each sampled tier.
+- A separate solver confirmed exactly one solution for each of the 400 puzzles.
+- Solution consistency checked against each puzzle's givens.
+- Browser checks covered all four difficulty buttons, their displayed grade, new offline puzzle generation, final-answer completion, frozen timer, saved completion, editing locks and statistics recorded once.
+- These checks ran on desktop Edge. iPad speed and perceived difficulty still need playtesting.
 
-Desktop Chromium/Edge automated checks cover taps, two strokes including a held second stroke, visible pending ink, explicit confirmation, stored corrections, saved-cell protection, skipped training, profile isolation, manual pause and narrow-screen layout. These checks do not substitute for testing Pencil pressure, palm rejection or recognition accuracy on your iPad.
-
-Unique-solution puzzle generation and the existing difficulty heuristic remain. Data stays in this browser/device; profiles are not online accounts and do not sync across devices.
+## Existing features
+Personal handwriting setup, per-profile learning, persistent short Pencil strokes, confirmation controls, candidate notes, mistake outlines, matching-digit highlights, pause/resume and completion checks remain.
+Always confirm lets you finish all strokes before committing a number.
