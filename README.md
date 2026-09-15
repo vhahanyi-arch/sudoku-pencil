@@ -1,9 +1,23 @@
-# Sudoku Pencil v0.9.6 — Newspaper-inspired difficulty
+# Sudoku Pencil v0.9.7 — Targeted handwriting practice
+
+## Practice one digit
+Open Profiles → Practice one digit. Select a digit (1–9) and write naturally with as many strokes and pauses as needed.
+
+1. Tap Check recognition to see what the app reads BEFORE teaching the example.
+2. If you wrote the selected digit, tap Save as [digit]. If the sample is unfinished or not that digit, clear it instead.
+3. Clear / try again and write a fresh example to see whether recognition improves.
+4. Choose another digit, or tap Done to return to your game.
+
+Recognition tests all nine digits without using the selected target as a hint. Checking alone never updates learning; you explicitly confirm the intended label. Saving changes only that digit in the current profile. Up to six examples per digit are retained, replacing the oldest when full. There is no automatic erase of all training.
+Session counters show how often fresh checks matched your selected digit and how many examples you saved. These are practice results, not a validated recognition-accuracy score. Repeatedly checking an unchanged sample does not inflate the count.
+
+The game pauses and stays covered during practice. Manual pauses are retained when you exit. Saved games, notes, other digit examples and statistics are unchanged. Unsaved practice ink and session counters are not retained when you close or reload; saved examples persist locally.
+
 
 ## Install
 Replace all SIX files in the existing GitHub Pages folder:
 index.html, manifest.json, sw.js, engine.js, puzzles.js, README.md.
-Refresh online until v0.9.6 appears. Keep site data to preserve profiles, handwriting learning, saved games and statistics.
+Refresh online until v0.9.7 appears. Keep site data to preserve profiles, handwriting learning, saved games and statistics.
 Start a NEW puzzle to try the updated difficulty. Earlier saves keep their boards and show their original difficulty label.
 
 ## NYT-inspired calibration
@@ -31,5 +45,6 @@ The v0.9.5 cell-change writing flow is unchanged. Keep writing in a cell without
 Profiles, existing games, training, notes, pause, completion and statistics remain supported.
 
 ## Verification
+Targeted-practice browser tests cover short and multi-stroke input, checking before labeling, duplicate-check/save guards, a fresh recognition attempt after teaching, per-digit and profile isolation, preserved game and statistics, pause/resume and small-screen layout. Writing-flow and last-answer completion regressions also passed.
 400 generated variants (100 per tier) are checked with an independent uniqueness solver, tier assertions and candidate eliminations checked against their known solutions.
 Browser regression tests cover long writing pauses, cell departure, strong/uncertain recognition, persistent ink, settings, and last-digit completion. These desktop checks cannot establish an exact subjective match to NYT or replace iPad playtesting.
