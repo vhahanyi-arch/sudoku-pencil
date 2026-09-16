@@ -1,68 +1,27 @@
-# Sudoku Pencil v0.9.8 — Profile backup & restore
-
-## Backup and restore
-Open Profiles → Backup & restore.
-
-To export, choose Current profile or All profiles, then Download backup. Keep the JSON file in Files / Downloads, iCloud Drive or another safe place. Confirm that it was actually saved before clearing browser data or changing devices. Backups are manual and contain names, handwriting examples, puzzle progress, notes, preferences and statistics as readable, unencrypted JSON. There is no automatic cloud sync.
-
-To restore on this device or another, open Sudoku Pencil v0.9.8 (or a compatible newer version), choose the JSON file, review the listed profiles, and tap Restore as new profiles. Select the restored profile from Playing as afterwards. Existing profiles are never overwritten: repeated names get a restored suffix, and each import receives new identifiers. Importing the same file twice creates separate copies.
-
-The game pauses while the backup screen is open. A manually paused game stays paused after closing. Only saved handwriting training is included; unfinished practice-session drawings are not included. In-progress puzzle ink, even before number confirmation, is included.
-
-Only Sudoku Pencil backup format version 1 is accepted. Files over 10 MB, unsupported versions, malformed puzzle grids or invalid learning data are rejected. Browser-storage failures leave the existing profile collection intact. You may be able to import a smaller, single-profile backup if browser space is limited.
-
-## Release installation
-Upload ALL SEVEN files, including the new backup.js:
-index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, README.md.
-Refresh online until v0.9.8 appears. backup.js is required for this release.
-
-
-## Practice one digit
-Open Profiles → Practice one digit. Select a digit (1–9) and write naturally with as many strokes and pauses as needed.
-
-1. Tap Check recognition to see what the app reads BEFORE teaching the example.
-2. If you wrote the selected digit, tap Save as [digit]. If the sample is unfinished or not that digit, clear it instead.
-3. Clear / try again and write a fresh example to see whether recognition improves.
-4. Choose another digit, or tap Done to return to your game.
-
-Recognition tests all nine digits without using the selected target as a hint. Checking alone never updates learning; you explicitly confirm the intended label. Saving changes only that digit in the current profile. Up to six examples per digit are retained, replacing the oldest when full. There is no automatic erase of all training.
-Session counters show how often fresh checks matched your selected digit and how many examples you saved. These are practice results, not a validated recognition-accuracy score. Repeatedly checking an unchanged sample does not inflate the count.
-
-The game pauses and stays covered during practice. Manual pauses are retained when you exit. Saved games, notes, other digit examples and statistics are unchanged. Unsaved practice ink and session counters are not retained when you close or reload; saved examples persist locally.
-
+# Sudoku Pencil v0.9.9 — iPad layout
 
 ## Install
-Replace all SEVEN files in the existing GitHub Pages folder:
+Upload all SEVEN files to the same GitHub Pages folder:
 index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, README.md.
-Refresh online until v0.9.8 appears. Keep site data to preserve profiles, handwriting learning, saved games and statistics.
-Start a NEW puzzle to try the updated difficulty. Earlier saves keep their boards and show their original difficulty label.
+Refresh online until v0.9.9 appears. Do not clear site data: profiles, saved games and handwriting training use the same storage.
 
-## NYT-inspired calibration
-These are original Sudoku Pencil puzzles. The difficulty aims for a familiar newspaper progression; it is not an official NYT rating or an exact reproduction of NYT's generator.
+## What changed
+This release implements the first of the three planned usability improvements: keeping the board and everyday controls together.
+- Portrait: Notes, Erase cell, Finish digit and Pause sit directly below the board.
+- Landscape tablet: controls and digit confirmation sit beside the board.
+- The board sizes to the available viewport height, including safe-area spacing.
+- Space for confirmation is reserved so writing does not make the board jump.
+- Menu contains New puzzle, Correct digit, Check completion, Reload saved game, Stats, Profiles, and Writing & display settings.
+- The active profile selector, difficulty choices and timer remain visible.
 
-The direct NYT site and help page were unavailable during review. The comparison used as a design reference was James Hoss's original solver analysis, published by SudokuPulse, February 25, 2026:
-https://sudokupulse.com/articles/sudoku-difficulty/
-That analysis reports basic box scanning for NYT Easy and a broader mix of singles, pairs, locked candidates and occasional triples for Medium and Hard. It is a sample analysis by another puzzle maker, not NYT's published specification.
+Use Menu → Profiles for handwriting practice and Backup & restore. Use Menu → Writing & display settings to change recognition, mistake checking or matching-digit emphasis.
+The Notes mode indicator redesign and entry-review improvements are planned for later releases, not included here.
 
-Our rules (chosen for this app, not claimed to be NYT thresholds):
-- Easy: 38 givens; solved by full-house placements and hidden singles in boxes only.
-- Medium: requires row/column singles, naked singles or limited intermediate eliminations. Fewer than four locked-candidate/pair eliminations and no triples in this solver's path.
-- Hard: fully solved with supported logical techniques, requiring at least four intermediate eliminations or a naked triple.
-- Expert: an extra tier, beyond the three newspaper levels, for puzzles this logical grader cannot finish.
+## Verification and limits
+Browser viewport tests passed at 768×1024, 820×1180, 1024×768, 1180×820, 600×900 and 390×844. The board, four primary controls and open confirmation panel were all within the viewport. Tests checked a square board, stable positioning when confirmation changes, at least 44px control heights, and menu routes to statistics, settings, profiles, backup and new puzzles.
+Writing and final-answer completion regression tests were also run. Desktop emulation does not replace physical iPad/Safari testing. Very short windows, the onscreen keyboard or larger text settings may still require scrolling; the board is not shrunk below 300px just to force a fit.
 
-Medium and Hard are completely solved by logical deductions in the grader; no search steps are used to finish them. A backtracking solver is used separately to create solutions and verify uniqueness. These thresholds measure one solver's path, not all possible human approaches. Perceived difficulty can overlap and needs playtesting.
+## Existing features
+Cell-change recognition, multi-stroke handwriting, personal practice, notes, profile backups and restore, completion checks and the newspaper-inspired difficulty generator remain in place. NYT-inspired difficulty is approximate and is not an official NYT rating.
 
-## Generator
-64 verified seeds (16 per tier), based on randomized backtracking grids. New games transform digit labels and Sudoku-preserving row/column layouts, then regrade the result. This preserves uniqueness and keeps generation fast/offline. Variants from a seed share related underlying logic; the seed bank does not provide unlimited independent structures.
-
-The grader now prioritizes full houses and box scanning, and supports row/column hidden singles, naked singles, locked candidates, naked pairs, hidden pairs and naked triples. Each transformed board must match its selected tier.
-
-## Writing and saved games
-The v0.9.5 cell-change writing flow is unchanged. Keep writing in a cell without a countdown. Selecting a different cell saves strong personal matches; uncertain digits remain for confirmation. Finish digit also works for the final answer. Always confirm remains optional.
-Profiles, existing games, training, notes, pause, completion and statistics remain supported.
-
-## Verification
-Backup tests cover actual browser JSON downloads and file imports; learning, notes, unfinished ink and statistics round trips; preview before import; collision names; malformed files; simulated storage-quota failure; profile selection/reload; paused timing; narrow-screen layout. Writing and final-answer completion regression tests also passed. Actual iPad Files/iCloud interactions still need device testing.
-Targeted-practice browser tests cover short and multi-stroke input, checking before labeling, duplicate-check/save guards, a fresh recognition attempt after teaching, per-digit and profile isolation, preserved game and statistics, pause/resume and small-screen layout. Writing-flow and last-answer completion regressions also passed.
-400 generated variants (100 per tier) are checked with an independent uniqueness solver, tier assertions and candidate eliminations checked against their known solutions.
-Browser regression tests cover long writing pauses, cell departure, strong/uncertain recognition, persistent ink, settings, and last-digit completion. These desktop checks cannot establish an exact subjective match to NYT or replace iPad playtesting.
+Backup export produces a manual JSON file; restore adds separate profiles rather than replacing existing ones. Keep backups in Files, iCloud Drive or another safe location. No automatic cloud sync is provided.

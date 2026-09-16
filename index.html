@@ -29,21 +29,45 @@
     details{margin-top:14px;padding:10px 14px;background:#fff9ed;border:1px solid #d1c6b1;border-radius:12px}summary{display:list-item;padding:10px;font-size:14px}.settings{padding-bottom:8px}#confirmation{border:1px solid #c9b174;background:#fff6d9;border-radius:12px;padding:12px;text-align:center;font-size:14px}.confirmDigits{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;margin-top:10px}.confirmDigits button{padding:5px 0;background:#fffdf6;border:1px solid #b7a785;border-radius:8px;font:bold 22px Georgia}.confirmDigits button.suggested{background:#c8ded4;border:2px solid #3f7464}.dialog-actions{flex-wrap:wrap}.trainingProgress{min-height:38px}dialog{max-height:94dvh;overflow:auto}.trainingCanvas{height:auto;aspect-ratio:1}
     @media(max-width:500px){.confirmDigits{gap:3px}.given{font-size:clamp(21px,6vw,32px)}.profilebar{flex-wrap:wrap}.settings{grid-template-columns:1fr}.toolbar button{flex-basis:85px}}
   </style>
+
+  <style>
+    body{padding:max(8px,env(safe-area-inset-top)) 10px max(8px,env(safe-area-inset-bottom))}
+    main{width:100%;max-width:740px}header{padding:0;margin:0 0 6px;align-items:center;min-height:44px}.brand{font-size:clamp(24px,4vw,32px)}
+    .headerActions{display:flex;gap:10px;align-items:center}.version{font-size:11px}.profilebar{margin:0 0 6px;flex-wrap:nowrap}.profilebar select{min-width:0;width:0}.profilebar label{white-space:nowrap}
+    button{border:1px solid #a99a7e;background:#fff9ed;color:var(--ink);border-radius:10px;padding:8px 10px;font-weight:650;font-size:14px}#openMenu{min-width:66px}
+    .difficulty{margin-bottom:4px;gap:5px}.meta{margin:4px 0 6px;min-height:20px;font-size:13px}.boardPanel{min-width:0}
+    .boardwrap{width:min(100%,max(300px,calc(100dvh - 408px - env(safe-area-inset-top) - env(safe-area-inset-bottom))));margin:auto}
+    .cell{container-type:inline-size}.given{font-size:clamp(18px,58cqw,42px)}
+    .playTools{min-width:0}.primaryTools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:9px}.primaryTools button{padding:7px 3px;min-height:46px;font-size:13px}
+    .status{min-height:44px;margin:4px 0;font-size:13px;line-height:18px}
+    .confirmationSlot{min-height:106px}#confirmation{padding:8px;font-size:12px;line-height:16px}#confirmationText{display:block;min-height:32px}.confirmDigits{gap:4px;margin-top:5px}.confirmDigits button{min-height:44px;font-size:22px}
+    .menuTools{display:grid;grid-template-columns:1fr 1fr;gap:8px}.menuTools button{min-height:48px}.difficultyInfo{line-height:18px;margin-bottom:8px}
+    @media(min-width:900px) and (min-height:550px){main{max-width:1160px}.playLayout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px;align-items:start}.boardwrap{width:min(100%,calc(100dvh - 200px - env(safe-area-inset-top) - env(safe-area-inset-bottom)))}.playTools{padding-top:26px}.primaryTools{grid-template-columns:1fr 1fr;margin-top:4px}.status{min-height:70px}.confirmDigits{grid-template-columns:repeat(3,1fr);gap:8px}.confirmDigits button{min-height:48px}.profilebar{max-width:420px}.difficulty{max-width:600px}}
+    @media(max-width:420px){.brand{font-size:24px}.headerActions{gap:6px}.meta{font-size:11px}.primaryTools button{font-size:12px}}
+  </style>
 </head>
 <body><main>
-  <header><div class="brand">Sudoku Pencil</div><div class="version">v0.9.8 · Profile backup</div></header>
-  <div class="profilebar"><label for="profileSelect">Playing as</label><select id="profileSelect"></select><button id="manageProfiles">Profiles</button></div>
+  <header><div class="brand">Sudoku Pencil</div><div class="headerActions"><span class="version">v0.9.9</span><button id="openMenu" aria-haspopup="dialog">Menu</button></div></header>
+  <div class="profilebar"><label for="profileSelect">Playing as</label><select id="profileSelect"></select></div>
   <div class="difficulty" id="difficulty"></div>
-  <div class="meta"><span id="levelLabel">Medium</span><span id="timer">00:00</span></div><div id="difficultyInfo" class="difficultyInfo"></div>
-  <div class="boardwrap"><div class="board" id="board" aria-label="Sudoku board"></div><div class="pauseCover" id="pauseCover"><div>Game paused<small>The puzzle is hidden while the timer is stopped.</small></div></div></div>
-  <div class="status" id="status">Write a number with your finger or Pencil</div>
-  <div id="confirmation" hidden><span id="confirmationText">What did you write?</span><button id="finishDigit" type="button">Finish digit</button><div id="confirmDigits" class="confirmDigits"></div></div>
-  <div class="toolbar">
-    <button id="notes">Notes: Off</button><button id="pause">Pause</button><button id="erase">Erase cell</button><button id="correct">Correct digit</button><button id="newGame">New puzzle</button><button id="checkFinished">Check completion</button>
+  <div class="playLayout">
+    <section class="boardPanel" aria-label="Puzzle">
+      <div class="meta"><span id="levelLabel">Medium</span><span id="timer">00:00</span></div>
+      <div class="boardwrap"><div class="board" id="board" aria-label="Sudoku board"></div><div class="pauseCover" id="pauseCover"><div>Game paused<small>The puzzle is hidden while the timer is stopped.</small></div></div></div>
+    </section>
+    <section class="playTools" aria-label="Play controls">
+      <div class="toolbar primaryTools"><button id="notes">Notes: Off</button><button id="erase">Erase cell</button><button id="finishDigit" type="button">Finish digit</button><button id="pause">Pause</button></div>
+      <div class="status" id="status" role="status" aria-live="polite">Write a number with your finger or Pencil</div>
+      <div class="confirmationSlot"><div id="confirmation" hidden><span id="confirmationText">What did you write?</span><div id="confirmDigits" class="confirmDigits"></div></div></div>
+    </section>
   </div>
-  <details><summary>Writing & display settings</summary><div class="settings"><label for="recognitionMode">Recognized answers</label><select id="recognitionMode"><option value="confirm">Always confirm</option><option value="leave">Save strong matches on cell change</option></select><label for="check">Mistake checking</label><select id="check"><option value="solution">Check against solution</option><option value="conflict">Sudoku conflicts only</option><option value="off">Off</option></select><label for="matching">Highlight matching digits</label><select id="matching"><option value="on">On</option><option value="off">Off</option></select></div></details>
-  <div class="toolbar"><button id="resume">Reload saved game</button><button id="stats">Stats</button></div>
 </main>
+<dialog id="menuDialog" aria-labelledby="menuHeading">
+  <h2 id="menuHeading">Game menu</h2><div id="difficultyInfo" class="difficultyInfo"></div>
+  <div class="menuTools"><button id="newGame">New puzzle</button><button id="correct">Correct digit</button><button id="checkFinished">Check completion</button><button id="resume">Reload saved game</button><button id="stats">Stats</button><button id="manageProfiles">Profiles</button></div>
+  <details><summary>Writing & display settings</summary><div class="settings"><label for="recognitionMode">Recognized answers</label><select id="recognitionMode"><option value="confirm">Always confirm</option><option value="leave">Save strong matches on cell change</option></select><label for="check">Mistake checking</label><select id="check"><option value="solution">Check against solution</option><option value="conflict">Sudoku conflicts only</option><option value="off">Off</option></select><label for="matching">Highlight matching digits</label><select id="matching"><option value="on">On</option><option value="off">Off</option></select></div></details>
+  <div class="dialog-actions"><button data-close>Back to puzzle</button></div>
+</dialog>
 <dialog id="backupDialog" aria-labelledby="backupHeading">
   <h2 id="backupHeading">Backup & restore</h2>
   <p>Save your handwriting learning, puzzles, notes, settings and statistics to a file.</p>
@@ -79,7 +103,7 @@
 <script>
 (() => {
   'use strict';
-  const VERSION='0.9.8', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
+  const VERSION='0.9.9', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
   const K={db:'sp-profiles-v09',oldGames:'sp-games-v081',oldPrefs:'sp-prefs-v081',oldStats:'sp-stats-v081',oldLearn:'sp-learn-v081'};
   const $=s=>document.querySelector(s), board=$('#board'), status=$('#status');
   let state, selected=-1, drawing=false, activeStroke=[], timerId, paused=false, autoPaused=false, training=null, practice=null;
@@ -167,6 +191,8 @@
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&!paused){autoPaused=true;setPaused(true,false)}else if(!document.hidden&&autoPaused&&!state.userPaused&&!training&&!practice&&!backupSession){autoPaused=false;setPaused(false,false)}});window.addEventListener('beforeunload',saveGame);
   for(let d=1;d<=9;d++){const b=document.createElement('button');b.textContent=d;b.setAttribute('aria-label',`Confirm digit ${d}`);b.onclick=()=>correctDigit(d);$('#confirmDigits').append(b)}
   $('#acceptTraining').onclick=captureTrainingSample;
+  $('#openMenu').onclick=()=>$('#menuDialog').showModal();
+  $('#menuDialog').addEventListener('click',e=>{if(e.target.closest('.menuTools button'))$('#menuDialog').close()},true);
   $('#backupOpen').onclick=openBackup;$('#backupDownload').onclick=downloadBackup;$('#backupFile').onchange=previewBackup;$('#backupImport').onclick=importBackup;$('#backupClose').onclick=closeBackup;$('#backupDialog').addEventListener('cancel',e=>{e.preventDefault();closeBackup()});
   $('#finishDigit').onclick=()=>{if(selected>=0&&!paused&&!drawing&&!state.complete)recognizeAndApply(selected)};
   $('#recognitionMode').onchange=e=>{prefs.recognitionMode=e.target.value;savePrefs()};
