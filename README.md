@@ -1,4 +1,21 @@
-# Sudoku Pencil v0.9.7 — Targeted handwriting practice
+# Sudoku Pencil v0.9.8 — Profile backup & restore
+
+## Backup and restore
+Open Profiles → Backup & restore.
+
+To export, choose Current profile or All profiles, then Download backup. Keep the JSON file in Files / Downloads, iCloud Drive or another safe place. Confirm that it was actually saved before clearing browser data or changing devices. Backups are manual and contain names, handwriting examples, puzzle progress, notes, preferences and statistics as readable, unencrypted JSON. There is no automatic cloud sync.
+
+To restore on this device or another, open Sudoku Pencil v0.9.8 (or a compatible newer version), choose the JSON file, review the listed profiles, and tap Restore as new profiles. Select the restored profile from Playing as afterwards. Existing profiles are never overwritten: repeated names get a restored suffix, and each import receives new identifiers. Importing the same file twice creates separate copies.
+
+The game pauses while the backup screen is open. A manually paused game stays paused after closing. Only saved handwriting training is included; unfinished practice-session drawings are not included. In-progress puzzle ink, even before number confirmation, is included.
+
+Only Sudoku Pencil backup format version 1 is accepted. Files over 10 MB, unsupported versions, malformed puzzle grids or invalid learning data are rejected. Browser-storage failures leave the existing profile collection intact. You may be able to import a smaller, single-profile backup if browser space is limited.
+
+## Release installation
+Upload ALL SEVEN files, including the new backup.js:
+index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, README.md.
+Refresh online until v0.9.8 appears. backup.js is required for this release.
+
 
 ## Practice one digit
 Open Profiles → Practice one digit. Select a digit (1–9) and write naturally with as many strokes and pauses as needed.
@@ -15,9 +32,9 @@ The game pauses and stays covered during practice. Manual pauses are retained wh
 
 
 ## Install
-Replace all SIX files in the existing GitHub Pages folder:
-index.html, manifest.json, sw.js, engine.js, puzzles.js, README.md.
-Refresh online until v0.9.7 appears. Keep site data to preserve profiles, handwriting learning, saved games and statistics.
+Replace all SEVEN files in the existing GitHub Pages folder:
+index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, README.md.
+Refresh online until v0.9.8 appears. Keep site data to preserve profiles, handwriting learning, saved games and statistics.
 Start a NEW puzzle to try the updated difficulty. Earlier saves keep their boards and show their original difficulty label.
 
 ## NYT-inspired calibration
@@ -45,6 +62,7 @@ The v0.9.5 cell-change writing flow is unchanged. Keep writing in a cell without
 Profiles, existing games, training, notes, pause, completion and statistics remain supported.
 
 ## Verification
+Backup tests cover actual browser JSON downloads and file imports; learning, notes, unfinished ink and statistics round trips; preview before import; collision names; malformed files; simulated storage-quota failure; profile selection/reload; paused timing; narrow-screen layout. Writing and final-answer completion regression tests also passed. Actual iPad Files/iCloud interactions still need device testing.
 Targeted-practice browser tests cover short and multi-stroke input, checking before labeling, duplicate-check/save guards, a fresh recognition attempt after teaching, per-digit and profile isolation, preserved game and statistics, pause/resume and small-screen layout. Writing-flow and last-answer completion regressions also passed.
 400 generated variants (100 per tier) are checked with an independent uniqueness solver, tier assertions and candidate eliminations checked against their known solutions.
 Browser regression tests cover long writing pauses, cell departure, strong/uncertain recognition, persistent ink, settings, and last-digit completion. These desktop checks cannot establish an exact subjective match to NYT or replace iPad playtesting.
