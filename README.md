@@ -1,27 +1,22 @@
-# Sudoku Pencil v0.9.9 — iPad layout
+# Sudoku Pencil v0.9.10 — Larger grid
 
 ## Install
-Upload all SEVEN files to the same GitHub Pages folder:
-index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, README.md.
-Refresh online until v0.9.9 appears. Do not clear site data: profiles, saved games and handwriting training use the same storage.
+Upload all seven files to the same GitHub Pages folder: index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js and README.md.
+Refresh online until v0.9.10 appears. Do not clear site data: profiles, learning and saved games use the same storage. Back up profiles before updating as a precaution.
 
-## What changed
-This release implements the first of the three planned usability improvements: keeping the board and everyday controls together.
-- Portrait: Notes, Erase cell, Finish digit and Pause sit directly below the board.
-- Landscape tablet: controls and digit confirmation sit beside the board.
-- The board sizes to the available viewport height, including safe-area spacing.
-- Space for confirmation is reserved so writing does not make the board jump.
-- Menu contains New puzzle, Correct digit, Check completion, Reload saved game, Stats, Profiles, and Writing & display settings.
-- The active profile selector, difficulty choices and timer remain visible.
+## Grid size
+Larger grid is now the default in portrait and landscape. Portrait uses available width up to 820px; landscape keeps controls beside the wider board. Lower cells or confirmation controls may require scrolling. Scroll from beside the board, since the board itself captures handwriting.
 
-Use Menu → Profiles for handwriting practice and Backup & restore. Use Menu → Writing & display settings to change recognition, mistake checking or matching-digit emphasis.
-The Notes mode indicator redesign and entry-review improvements are planned for later releases, not included here.
+Menu → Writing & display settings → Grid size:
+- Larger grid: more room for Pencil writing.
+- Fit everything: the previous compact layout, intended to keep the board and everyday controls together on typical tablet screens.
 
-## Verification and limits
-Browser viewport tests passed at 768×1024, 820×1180, 1024×768, 1180×820, 600×900 and 390×844. The board, four primary controls and open confirmation panel were all within the viewport. Tests checked a square board, stable positioning when confirmation changes, at least 44px control heights, and menu routes to statistics, settings, profiles, backup and new puzzles.
-Writing and final-answer completion regression tests were also run. Desktop emulation does not replace physical iPad/Safari testing. Very short windows, the onscreen keyboard or larger text settings may still require scrolling; the board is not shrunk below 300px just to force a fit.
+The choice is saved per profile and included in new backups. Older profiles and backups default to Larger grid until you choose otherwise. Changing size does not erase handwriting or start a new puzzle. The installed app no longer requests portrait-only orientation.
 
-## Existing features
-Cell-change recognition, multi-stroke handwriting, personal practice, notes, profile backups and restore, completion checks and the newspaper-inspired difficulty generator remain in place. NYT-inspired difficulty is approximate and is not an official NYT rating.
+## Preserved features
+Multi-stroke handwriting, cell-change recognition, personal practice, notes, mistake checking, matching-digit emphasis, backup/restore, pause/resume, completion detection, stats and difficulty generation remain unchanged. Newspaper-inspired difficulty ratings are approximate, not official NYT ratings. The Notes-mode redesign and unresolved-entry review remain deferred.
 
-Backup export produces a manual JSON file; restore adds separate profiles rather than replacing existing ones. Keep backups in Files, iCloud Drive or another safe location. No automatic cloud sync is provided.
+## Testing and limits
+Desktop browser checks cover six viewport sizes, both orientations, square grids, no horizontal overflow, reachable controls, settings persistence and preserved game cells/learning. Handwriting and final-answer completion regression tests pass. Physical iPad/Apple Pencil testing is still needed. Larger text, browser bars or the onscreen keyboard can require extra scrolling.
+
+Profile backup is manual JSON export; restore adds separate profiles without replacing existing ones. No automatic cloud sync is provided.
