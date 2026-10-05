@@ -1,10 +1,34 @@
-# Sudoku Pencil v0.9.12 — Screenshot daily challenges
+# Sudoku Pencil v0.9.13 — Number pad input
 
 ## Install
 Upload all TEN files to the same GitHub Pages folder:
 index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js and README.md.
 
-Refresh online until v0.9.12 appears. Keep site data so profiles, handwriting learning and saved puzzles remain available. A profile backup before updating is recommended.
+Refresh online until v0.9.13 appears.
+
+## Number pad (new in v0.9.13)
+Open Menu → Enter numbers by → Number pad. Select a cell, then tap a number below the board. With Notes on, tapping a number adds that note, and tapping it again removes it. A number fades on the pad once all nine are placed. You can type over an answer without erasing it first. Typed answers appear in blue so they stand out from the givens. The setting is saved per profile and included in backups.
+
+With a hardware keyboard, use 1–9 to enter, arrow keys to move, Backspace or Delete to erase and N to switch Notes. This works in both input modes. Switch back to Handwriting at any time. Existing handwritten entries are kept.
+
+## Undo and redo (new in v0.9.13)
+Undo sits beside Notes. Redo is in the Menu. Both cover answers, notes, erasing and every handwriting stroke, so you can take back one stroke at a time. With a keyboard, use Ctrl/⌘+Z to undo and Ctrl/⌘+Shift+Z or Ctrl+Y to redo. History lasts for the current game only and resets when you change puzzle, profile or reload.
+
+## Fill notes (new in v0.9.13)
+Menu → Fill notes puts every possible number into each empty cell as small typed notes. A number counts as possible if it isn't already in that cell's row, column or box. Cells where you've already written notes keep yours, and only lose notes that are now impossible, so your eliminations survive. Placing an answer removes that number from the notes in its row, column and box. One Undo reverts the whole fill. Candidates are based on the board as it stands. If mistake checking is off and the board has a wrong answer, some candidates can be wrong too.
+
+## Other changes in v0.9.13
+- Placing an answer clears that cell's notes. Undo brings them back.
+- Erase removes the answer first and keeps notes. Tap Erase again to clear the notes.
+- In Notes mode, writing or tapping a number that is already a note removes it.
+- Saves are grouped together and written immediately when the app is hidden or closed. Handwriting is stored more compactly, and existing saves are compacted once on first load.
+- If browser storage fills up, a warning appears instead of moves silently going unsaved. Download a backup if you see it.
+- Pinch-zoom works again outside the board.
+- The offline copy only stores successful downloads, so a half-finished upload can't break it.
+- Finishing an imported challenge now names the puzzle in the completion message.
+- Motion polish: buttons shrink slightly when pressed, dialogs and the pause screen fade in, and solving a puzzle sends a wave across the grid before the completion dialog. Selecting cells, entering numbers and writing stay instant. Reduce Motion on iPad turns off the movement and keeps the fades.
+
+The rest of this file describes v0.9.12 features, which are unchanged. Keep site data so profiles, handwriting learning and saved puzzles remain available. A profile backup before updating is recommended.
 
 ## Import a daily challenge
 1. Open Menu → Daily challenges / Import.
