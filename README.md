@@ -1,28 +1,28 @@
-# Sudoku Pencil v0.9.13 — Number pad input
+# Sudoku Pencil v0.9.14 — Number pad, undo, fill notes and dark mode
 
 ## Install
 Upload all TEN files to the same GitHub Pages folder:
 index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js and README.md.
 
-Refresh online until v0.9.13 appears.
+Refresh online until v0.9.14 appears in the top-right corner. From this version on, a new upload shows on the next online launch.
 
-## Number pad (new in v0.9.13)
+## Number pad (new since v0.9.12)
 Open Menu → Enter numbers by → Number pad. Select a cell, then tap a number below the board. With Notes on, tapping a number adds that note, and tapping it again removes it. A number fades on the pad once all nine are placed. You can type over an answer without erasing it first. Typed answers appear in blue so they stand out from the givens. The setting is saved per profile and included in backups.
 
 With a hardware keyboard, use 1–9 to enter, arrow keys to move, Backspace or Delete to erase and N to switch Notes. This works in both input modes. Switch back to Handwriting at any time. Existing handwritten entries are kept.
 
-## Undo and redo (new in v0.9.13)
+## Undo and redo (new since v0.9.12)
 Undo sits beside Notes. Redo is in the Menu. Both cover answers, notes, erasing and every handwriting stroke, so you can take back one stroke at a time. With a keyboard, use Ctrl/⌘+Z to undo and Ctrl/⌘+Shift+Z or Ctrl+Y to redo. History lasts for the current game only and resets when you change puzzle, profile or reload.
 
-## Fill notes (new in v0.9.13)
+## Fill notes (new since v0.9.12)
 Menu → Fill notes puts every possible number into each empty cell as small typed notes. A number counts as possible if it isn't already in that cell's row, column or box. Cells where you've already written notes keep yours, and only lose notes that are now impossible, so your eliminations survive. Placing an answer removes that number from the notes in its row, column and box. One Undo reverts the whole fill. Candidates are based on the board as it stands. If mistake checking is off and the board has a wrong answer, some candidates can be wrong too.
 
-## Dark mode (new in v0.9.13)
+## Dark mode (new since v0.9.12)
 Menu → Appearance: Match device (default), Light or Dark. Match device follows the iPad's Light/Dark setting, including the automatic switch at sunset. Dark mode uses warm charcoal "paper", light ink for your handwriting, light-blue typed answers and a dimmed amber highlight for matching digits. The setting is saved per profile and included in backups. Handwriting recognition works the same in both themes.
 
 The screenshot importer still needs a **light-mode** screenshot of the puzzle, whatever theme this app uses.
 
-## Other changes in v0.9.13
+## Other changes since v0.9.12
 - Placing an answer clears that cell's notes. Undo brings them back.
 - Erase removes the answer first and keeps notes. Tap Erase again to clear the notes.
 - In Notes mode, writing or tapping a number that is already a note removes it.

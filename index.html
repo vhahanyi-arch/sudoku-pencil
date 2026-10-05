@@ -96,7 +96,7 @@ dialog[open]{transition:opacity 200ms var(--ease-out),transform 200ms var(--ease
 :root[data-theme="dark"] #importGrid,:root[data-theme="dark"] #importGrid input{background:#24211c;color:var(--ink);border-color:#4a443a}:root[data-theme="dark"] #importGrid input.uncertain{background:#4a3f1f}:root[data-theme="dark"] #importMessage{background:#2c2922}:root[data-theme="dark"] #importImage{border-color:#4a443a}#inputModeHelp{grid-column:1/-1;line-height:1.5}
 </style></head>
 <body><main>
-  <header><div class="brand">Sudoku Pencil</div><div class="headerActions"><span class="version">v0.9.13</span><button id="openMenu" aria-haspopup="dialog">Menu</button></div></header>
+  <header><div class="brand">Sudoku Pencil</div><div class="headerActions"><span class="version">v0.9.14</span><button id="openMenu" aria-haspopup="dialog">Menu</button></div></header>
   <div id="storageWarning" role="alert" hidden>Your browser storage is full, so recent moves are not being saved. Download a backup now from Menu → Profiles → Backup &amp; restore. Saving resumes automatically once space is available.</div>
   <div class="profilebar"><label for="profileSelect">Playing as</label><select id="profileSelect"></select></div>
   <div class="difficulty" id="difficulty"></div>
@@ -174,7 +174,7 @@ dialog[open]{transition:opacity 200ms var(--ease-out),transform 200ms var(--ease
 <script>
 (() => {
   'use strict';
-  const VERSION='0.9.13', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
+  const VERSION='0.9.14', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
   const K={db:'sp-profiles-v09',oldGames:'sp-games-v081',oldPrefs:'sp-prefs-v081',oldStats:'sp-stats-v081',oldLearn:'sp-learn-v081'};
   const $=s=>document.querySelector(s), board=$('#board'), status=$('#status');
   let state, selected=-1, drawing=false, activeStroke=[], timerId, paused=false, autoPaused=false, training=null, practice=null;
