@@ -17,6 +17,11 @@ Undo sits beside Notes. Redo is in the Menu. Both cover answers, notes, erasing 
 ## Fill notes (new in v0.9.13)
 Menu → Fill notes puts every possible number into each empty cell as small typed notes. A number counts as possible if it isn't already in that cell's row, column or box. Cells where you've already written notes keep yours, and only lose notes that are now impossible, so your eliminations survive. Placing an answer removes that number from the notes in its row, column and box. One Undo reverts the whole fill. Candidates are based on the board as it stands. If mistake checking is off and the board has a wrong answer, some candidates can be wrong too.
 
+## Dark mode (new in v0.9.13)
+Menu → Appearance: Match device (default), Light or Dark. Match device follows the iPad's Light/Dark setting, including the automatic switch at sunset. Dark mode uses warm charcoal "paper", light ink for your handwriting, light-blue typed answers and a dimmed amber highlight for matching digits. The setting is saved per profile and included in backups. Handwriting recognition works the same in both themes.
+
+The screenshot importer still needs a **light-mode** screenshot of the puzzle, whatever theme this app uses.
+
 ## Other changes in v0.9.13
 - Placing an answer clears that cell's notes. Undo brings them back.
 - Erase removes the answer first and keeps notes. Tap Erase again to clear the notes.
