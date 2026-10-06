@@ -1,13 +1,25 @@
-# Sudoku Pencil v0.9.14 — Number pad, undo, fill notes and dark mode
+# Sudoku Pencil v0.9.15 — The newspaper puzzle page
 
 ## Install
-Upload all TEN files to the same GitHub Pages folder:
-index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js and README.md.
+Upload all TWELVE files to the same GitHub Pages folder:
+index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js, README.md, libre-franklin.woff2 and old-standard-bold.woff2.
 
-Refresh online until v0.9.14 appears in the top-right corner. From this version on, a new upload shows on the next online launch.
+Refresh online until v0.9.15 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+
+## The newspaper look (new in v0.9.15)
+The whole app is now set like the puzzle page of a printed daily paper:
+- A masthead with today's date over a thick-and-thin rule, and the difficulty levels as section tabs, with the current one printed in reverse.
+- Each generated puzzle has its own number ("No. 5,563") and difficulty marks. On an iPad, the board and tools sit in ruled columns.
+- The grid is printed in black ink on newsprint. Your marks look like a reader's marks: yellow highlighter for the selected square, pale-green highlighter for matching numbers, blue pencil for notes, red pen for mistakes and an amber underline for handwriting still waiting for confirmation. Typed answers are in blue-black pen.
+- In number-pad mode, each key shows how many of that number are left. The key is struck through once all nine are placed.
+- Results (Menu → Stats) is a ruled table of solved counts, best and average times, including daily challenges.
+- Dark mode is the same page at night.
+- The squares are exactly the same size as before in both grid settings.
+
+Type: Libre Franklin and Old Standard TT, both under the SIL Open Font License 1.1 (Libre Franklin © The Libre Franklin Project Authors; Old Standard TT © Alexey Kryukov). They ship beside the app so it works offline.
 
 ## Number pad (new since v0.9.12)
-Open Menu → Enter numbers by → Number pad. Select a cell, then tap a number below the board. With Notes on, tapping a number adds that note, and tapping it again removes it. A number fades on the pad once all nine are placed. You can type over an answer without erasing it first. Typed answers appear in blue so they stand out from the givens. The setting is saved per profile and included in backups.
+Open Menu → Enter numbers by → Number pad. Select a cell, then tap a number below the board. With Notes on, tapping a number adds that note, and tapping it again removes it. Each key shows how many of that number are left and is struck through once all nine are placed. You can type over an answer without erasing it first. Typed answers appear in blue so they stand out from the givens. The setting is saved per profile and included in backups.
 
 With a hardware keyboard, use 1–9 to enter, arrow keys to move, Backspace or Delete to erase and N to switch Notes. This works in both input modes. Switch back to Handwriting at any time. Existing handwritten entries are kept.
 
