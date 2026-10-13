@@ -1,10 +1,21 @@
-# Sudoku Pencil v0.9.15 — The newspaper puzzle page
+# Sudoku Pencil v0.9.16 — Six styles
 
 ## Install
-Upload all TWELVE files to the same GitHub Pages folder:
-index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js, README.md, libre-franklin.woff2 and old-standard-bold.woff2.
+Upload all FIFTEEN files to the same GitHub Pages folder:
+index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js, README.md, libre-franklin.woff2, old-standard-bold.woff2, patrick-hand.woff2, architects-daughter.woff2 and bitter.woff2.
 
-Refresh online until v0.9.15 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+Refresh online until v0.9.16 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+
+## Styles (new in v0.9.16)
+Menu → Style. Each profile remembers its own style, and every style has a light and a dark version (Menu → Appearance). The squares are exactly the same size in every style, so writing room never changes.
+- **Newspaper**: the printed daily-paper puzzle page from v0.9.15.
+- **Classic**: the previous rounded, warm-paper look, light and dark.
+- **Chalkboard**: chalk lettering on a green slate in a wooden frame. At night it's a black slate.
+- **Graph-paper notebook**: squared paper in a draftsman's hand. Givens are in black pen, typed answers in blue pen and notes in pencil. At night it turns into a blueprint.
+- **Wooden board**: an oak board on a maple table, with the givens on raised ivory tiles. Mistakes are crimson so they stand out from the wood. At night it's walnut.
+- **Calm**: soft slate-blue with rounded corners, no heavy black lines and lighter type, for relaxed play.
+
+Every style keeps the same marks: a highlighted selected square, matching numbers, notes, mistakes and an underline for handwriting waiting for confirmation. All colours meet contrast guidelines in every style.
 
 ## The newspaper look (new in v0.9.15)
 The whole app is now set like the puzzle page of a printed daily paper:
@@ -16,7 +27,7 @@ The whole app is now set like the puzzle page of a printed daily paper:
 - Dark mode is the same page at night.
 - The squares are exactly the same size as before in both grid settings.
 
-Type: Libre Franklin and Old Standard TT, both under the SIL Open Font License 1.1 (Libre Franklin © The Libre Franklin Project Authors; Old Standard TT © Alexey Kryukov). They ship beside the app so it works offline.
+Type: Libre Franklin, Old Standard TT, Patrick Hand, Architects Daughter and Bitter, all under the SIL Open Font License 1.1 (Libre Franklin © The Libre Franklin Project Authors; Old Standard TT © Alexey Kryukov; Patrick Hand © Patrick Wagesreiter; Architects Daughter © Kimberly Geswein; Bitter © The Bitter Project Authors). They ship beside the app so it works offline.
 
 ## Number pad (new since v0.9.12)
 Open Menu → Enter numbers by → Number pad. Select a cell, then tap a number below the board. With Notes on, tapping a number adds that note, and tapping it again removes it. Each key shows how many of that number are left and is struck through once all nine are placed. You can type over an answer without erasing it first. Typed answers appear in blue so they stand out from the givens. The setting is saved per profile and included in backups.
