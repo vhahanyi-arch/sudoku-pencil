@@ -1,10 +1,15 @@
-# Sudoku Pencil v0.9.20 — Quicker NYT import
+# Sudoku Pencil v0.9.21 — Review unconfirmed handwriting
 
 ## Install
 Upload all EIGHTEEN files to the same GitHub Pages folder:
 index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js, README.md, libre-franklin.woff2, old-standard-bold.woff2, patrick-hand.woff2, architects-daughter.woff2, bitter.woff2, apple-touch-icon.png, icon-192.png and icon-512.png.
 
-Refresh online until v0.9.20 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+Refresh online until v0.9.21 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+
+## Review unconfirmed handwriting (new in v0.9.21)
+When handwritten numbers are still waiting for you to confirm them (the amber underline), a bar under the tools says how many, for example "3 handwritten entries to confirm". Tap **Review** to step through them in reading order. Each one shows the app's suggestion. Tap the number you wrote and it jumps straight to the next one, or tap Erase cell to remove it. When all are done, the bar disappears. Tap any square to stop reviewing.
+
+Check completion now starts this review too when handwriting is still waiting. The bar sits in the space already kept for confirming, so the board is exactly the same size. It shows in Handwriting mode. In Number pad mode, select an underlined square and tap its number.
 
 ## Quicker NYT import (new in v0.9.20)
 You no longer need to tap the puzzle's corners. Once you choose or paste a screenshot, the app finds the grid by itself and reads the digits straight away. The green rectangle shows what it found. If it misses an edge, tap the corners as before.
@@ -118,7 +123,7 @@ After the updated app has loaded online and its files are cached, imports can wo
 Profile backups now include imported games. New exports use backup format 2 and need v0.9.12 or later to restore. Older format 1 backups remain supported. Restore adds separate profiles and does not replace existing profiles. There is no automatic cloud sync.
 
 ## Existing features
-Larger grid and Fit everything options, visible Notes mode, multi-stroke handwriting, personal practice, profile learning, completion checks and generated puzzle difficulties remain available. The planned unresolved-entry review is still deferred.
+Larger grid and Fit everything options, visible Notes mode, multi-stroke handwriting, personal practice, profile learning, completion checks and generated puzzle difficulties remain available. The unresolved-entry review arrived in v0.9.21.
 
 ## Verification
 Browser checks cover screenshot selection and corner cropping, recognition of a generated screenshot fixture, additional printed fonts, manual corrections, invalid/unsatisfiable/multiple-solution rejection, save/reload, cancellation timing, generated-game preservation, backup compatibility and imported completion without changing generated statistics. Existing handwriting, Notes mode and layout checks also pass.
