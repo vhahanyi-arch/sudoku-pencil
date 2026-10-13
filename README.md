@@ -1,10 +1,19 @@
-# Sudoku Pencil v0.9.16 — Six styles
+# Sudoku Pencil v0.9.17 — Home Screen icon
 
 ## Install
-Upload all FIFTEEN files to the same GitHub Pages folder:
-index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js, README.md, libre-franklin.woff2, old-standard-bold.woff2, patrick-hand.woff2, architects-daughter.woff2 and bitter.woff2.
+Upload all EIGHTEEN files to the same GitHub Pages folder:
+index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js, README.md, libre-franklin.woff2, old-standard-bold.woff2, patrick-hand.woff2, architects-daughter.woff2, bitter.woff2, apple-touch-icon.png, icon-192.png and icon-512.png.
 
-Refresh online until v0.9.16 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+Refresh online until v0.9.17 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+
+## Use it as an app (new in v0.9.17)
+The app now has a proper Home Screen icon: a printed Sudoku box with a handwritten 7 in a highlighted square.
+
+On iPad, each browser and the Home Screen app keep separate saved data, so move your profiles over with a backup:
+1. In the browser you have been playing in (for example Chrome), open Menu → Profiles → Backup & restore, set Profiles to back up to **All profiles**, tap Download backup, and save the file to Files or iCloud Drive.
+2. Open the game in Safari, tap Share → Add to Home Screen (switch on Open as Web App if shown) → Add.
+3. Open Sudoku Pencil from the Home Screen, then Menu → Profiles → Backup & restore → Restore from a backup file, and choose the saved file. Your profiles are added beside the new app's empty "My profile", which you can then delete.
+4. From then on, open it from the Home Screen icon. It runs full screen and works offline.
 
 ## Styles (new in v0.9.16)
 Menu → Style. Each profile remembers its own style, and every style has a light and a dark version (Menu → Appearance). The squares are exactly the same size in every style, so writing room never changes.

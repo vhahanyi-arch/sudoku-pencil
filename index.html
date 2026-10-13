@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#f2f0ea">
   <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Sudoku Pencil">
   <link rel="preload" href="libre-franklin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="old-standard-bold.woff2" as="font" type="font/woff2" crossorigin>
   <script>try{const d=JSON.parse(localStorage.getItem('sp-profiles-v09')),p=d?.profiles?.[d.active]?.prefs||{},t=p.theme||'system',dark=t==='dark'||(t==='system'&&matchMedia('(prefers-color-scheme: dark)').matches),M={"newspaper":["#f2f0ea","#171614"],"chalk":["#22362c","#141816"],"notebook":["#f7f9fc","#13233b"],"wood":["#d8b98d","#2a1b11"],"calm":["#eef1f5","#11151c"],"classic":["#f3eddf","#1b1915"]},st=M[p.style]?p.style:'newspaper';document.documentElement.dataset.theme=dark?'dark':'light';document.documentElement.dataset.style=st;document.querySelector('meta[name=theme-color]').content=M[st][dark?1:0]}catch{}</script>
@@ -195,7 +198,7 @@ html:not([data-style="classic"]){background:var(--paper);background-image:var(--
 #inputModeHelp{grid-column:1/-1;line-height:1.5}
 </style></head>
 <body><main>
-  <header><div class="masthead"><div class="brand">Sudoku Pencil</div><div class="dateline" id="dateline"></div></div><div class="headerActions"><span class="version">v0.9.16</span><button id="openMenu" aria-haspopup="dialog">Menu</button></div></header>
+  <header><div class="masthead"><div class="brand">Sudoku Pencil</div><div class="dateline" id="dateline"></div></div><div class="headerActions"><span class="version">v0.9.17</span><button id="openMenu" aria-haspopup="dialog">Menu</button></div></header>
   <div id="storageWarning" role="alert" hidden>Your browser storage is full, so recent moves are not being saved. Download a backup now from Menu → Profiles → Backup &amp; restore. Saving resumes automatically once space is available.</div>
   <div class="profilebar"><label for="profileSelect">Playing as</label><select id="profileSelect"></select></div>
   <div class="difficulty" id="difficulty"></div>
@@ -273,7 +276,7 @@ html:not([data-style="classic"]){background:var(--paper);background-image:var(--
 <script>
 (() => {
   'use strict';
-  const VERSION='0.9.16', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
+  const VERSION='0.9.17', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
   const K={db:'sp-profiles-v09',oldGames:'sp-games-v081',oldPrefs:'sp-prefs-v081',oldStats:'sp-stats-v081',oldLearn:'sp-learn-v081'};
   const $=s=>document.querySelector(s), board=$('#board'), status=$('#status');
   let state, selected=-1, drawing=false, activeStroke=[], timerId, paused=false, autoPaused=false, training=null, practice=null;

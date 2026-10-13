@@ -1,5 +1,5 @@
-const CACHE='sudoku-pencil-v0916';
-const ASSETS=['./','./index.html','./manifest.json','./engine.js','./puzzles.js','./backup.js','./screenshot.js','./imports.js','./import-worker.js','./libre-franklin.woff2','./old-standard-bold.woff2','./patrick-hand.woff2','./architects-daughter.woff2','./bitter.woff2'];
+const CACHE='sudoku-pencil-v0917';
+const ASSETS=['./','./index.html','./manifest.json','./engine.js','./puzzles.js','./backup.js','./screenshot.js','./imports.js','./import-worker.js','./libre-franklin.woff2','./old-standard-bold.woff2','./patrick-hand.woff2','./architects-daughter.woff2','./bitter.woff2','./apple-touch-icon.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS.map(a=>new Request(a,{cache:'reload'})))).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('sudoku-pencil-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 // Network first, always revalidating with the server (cache:'no-cache'), so a new upload shows on the next
