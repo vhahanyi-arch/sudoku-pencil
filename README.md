@@ -1,10 +1,21 @@
-# Sudoku Pencil v0.9.19 — Easier-to-spot matching numbers
+# Sudoku Pencil v0.9.20 — Quicker NYT import
 
 ## Install
 Upload all EIGHTEEN files to the same GitHub Pages folder:
 index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js, README.md, libre-franklin.woff2, old-standard-bold.woff2, patrick-hand.woff2, architects-daughter.woff2, bitter.woff2, apple-touch-icon.png, icon-192.png and icon-512.png.
 
-Refresh online until v0.9.19 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+Refresh online until v0.9.20 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+
+## Quicker NYT import (new in v0.9.20)
+You no longer need to tap the puzzle's corners. Once you choose or paste a screenshot, the app finds the grid by itself and reads the digits straight away. The green rectangle shows what it found. If it misses an edge, tap the corners as before.
+
+Fastest way on iPad, without the screenshot going into Photos:
+1. Open the puzzle in the NYT Games app (light mode, unplayed) and take a screenshot.
+2. Tap the screenshot preview in the corner, tap **Done**, then **Copy and Delete**.
+3. In Sudoku Pencil, open Menu → Daily challenges / Import and tap **Paste screenshot**. Tap **Paste** if the iPad asks.
+4. Check the preview against the puzzle, tick the box, and tap Check & play.
+
+Choosing a screenshot from Photos or Files still works. With a keyboard, ⌘V / Ctrl+V also pastes. The digit reader also got better at NYT screenshots: it ignores the orange highlighted square and the thick outer border, which it could misread before. Checking the preview stays required: the app never adds or changes givens itself.
 
 ## Matching numbers stand out (new in v0.9.19)
 When you select a square with a number, every other copy of that number is now circled and gets a stronger highlight, in every style, light and dark. The circle only ever means "same number": the selected square and mistakes still use square outlines, so they can't be mixed up. Numbers and notes stay as readable as before. Turn it off with Menu → Writing & display settings → Highlight matching digits.

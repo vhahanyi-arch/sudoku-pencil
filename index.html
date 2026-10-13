@@ -214,7 +214,7 @@ html:not([data-style="classic"]){background:var(--paper);background-image:var(--
 :root[data-style="classic"][data-theme="dark"]{--match-ring:#e8c25a}:root[data-style="classic"][data-theme="dark"] .cell.match{background:#4a3c12}
 </style></head>
 <body><main>
-  <header><div class="masthead"><div class="brand">Sudoku Pencil</div><div class="dateline" id="dateline"></div></div><div class="headerActions"><span class="version">v0.9.19</span><button id="openMenu" aria-haspopup="dialog">Menu</button></div></header>
+  <header><div class="masthead"><div class="brand">Sudoku Pencil</div><div class="dateline" id="dateline"></div></div><div class="headerActions"><span class="version">v0.9.20</span><button id="openMenu" aria-haspopup="dialog">Menu</button></div></header>
   <div id="storageWarning" role="alert" hidden>Your browser storage is full, so recent moves are not being saved. Download a backup now from Menu → Profiles → Backup &amp; restore. Saving resumes automatically once space is available.</div>
   <div class="profilebar"><label for="profileSelect">Playing as</label><select id="profileSelect"></select></div>
   <div class="difficulty" id="difficulty"></div>
@@ -245,6 +245,7 @@ html:not([data-style="classic"]){background:var(--paper);background-image:var(--
 <h3>Import a screenshot</h3><p>Use an unplayed puzzle in light mode, with only the original givens. Your screenshot stays on this device.</p>
 <div class="importColumns"><section class="importSection" aria-label="Screenshot">
 <label for="importFile">Choose screenshot</label><input id="importFile" type="file" accept="image/png,image/jpeg,image/webp">
+<div class="importActions"><button id="importPaste" type="button">Paste screenshot</button></div>
 <p id="importCropHelp">Tap the top-left outer corner of the puzzle, then its bottom-right outer corner.</p>
 <canvas id="importImage" hidden aria-label="Screenshot: tap the two opposite puzzle corners"></canvas>
 <div class="importActions"><button id="importWhole" disabled>Use whole image</button><button id="importCropReset" disabled>Reset corners</button><button id="importRead" disabled>Read digits</button></div>
@@ -292,7 +293,7 @@ html:not([data-style="classic"]){background:var(--paper);background-image:var(--
 <script>
 (() => {
   'use strict';
-  const VERSION='0.9.19', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
+  const VERSION='0.9.20', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
   const K={db:'sp-profiles-v09',oldGames:'sp-games-v081',oldPrefs:'sp-prefs-v081',oldStats:'sp-stats-v081',oldLearn:'sp-learn-v081'};
   const $=s=>document.querySelector(s), board=$('#board'), status=$('#status');
   let state, selected=-1, drawing=false, activeStroke=[], timerId, paused=false, autoPaused=false, training=null, practice=null;
