@@ -5,7 +5,7 @@
  const units=[];for(let r=0;r<9;r++)units.push(Array.from({length:9},(_,c)=>r*9+c));for(let c=0;c<9;c++)units.push(Array.from({length:9},(_,r)=>r*9+c));for(let b=0;b<9;b++)units.push(Array.from({length:9},(_,k)=>(Math.floor(b/3)*3+Math.floor(k/3))*9+(b%3)*3+k%3));
  const peers=Array.from({length:81},(_,i)=>[...new Set(units.filter(u=>u.includes(i)).flat())].filter(j=>j!==i));
  function mask(g,i){let m=ALL;for(const j of peers[i])if(g[j])m&=~(1<<(g[j]-1));return m}
- function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+ function shuffle(a,rng=Math.random){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
  function solve(grid,limit=2,random=false){const g=[...grid];let count=0,solution=null;function visit(){let idx=-1,choices=null;for(let i=0;i<81;i++)if(!g[i]){const c=bits(mask(g,i));if(!c.length)return;if(!choices||c.length<choices.length){idx=i;choices=c;if(c.length===1)break}}if(idx<0){count++;solution=[...g];return}for(const d of random?shuffle(choices):choices){g[idx]=d;visit();g[idx]=0;if(count>=limit)return}}visit();return {count,solution}}
  function grade(puzzle, verifySolution=null){const g=[...puzzle],m=g.map((v,i)=>v?0:mask(g,i));const steps={fullHouse:0,boxSingle:0,lineSingle:0,naked:0,locked:0,pairs:0,hiddenPairs:0,triples:0};let bottlenecks=0;
  const put=(i,d)=>{g[i]=d;m[i]=0;for(const j of peers[i])m[j]&=~(1<<(d-1))};
@@ -28,7 +28,12 @@
  if(verifySolution&&g.some((v,i)=>v!==verifySolution[i]))throw Error('Invalid completed grid');return finish(true);
  }
  function seed(){const solution=solve(Array(81).fill(0),1,true).solution;const puzzle=[...solution];for(const i of shuffle(Array.from({length:81},(_,i)=>i))){const v=puzzle[i];puzzle[i]=0;if(solve(puzzle).count!==1)puzzle[i]=v}return {puzzle,solution}}
- function transform(seed){const order=()=>shuffle([0,1,2]).flatMap(b=>shuffle([0,1,2]).map(i=>b*3+i)),rows=order(),cols=order(),digits=[0,...shuffle([1,2,3,4,5,6,7,8,9])],transpose=Math.random()<.5;const map=g=>rows.flatMap(r=>cols.map(c=>digits[g[transpose?c*9+r:r*9+c]]));return {puzzle:map(seed.puzzle),solution:map(seed.solution)}}
- function makePuzzle(level,bank,previous=''){const pool=bank[level];if(!pool?.length)throw Error('No verified puzzles for '+level);for(let attempt=0;attempt<80;attempt++){const p=transform(pool[Math.floor(Math.random()*pool.length)]),rating=grade(p.puzzle);if(rating.level===level&&p.puzzle.join('')!==previous)return {...p,rating,score:Object.values(rating.steps).reduce((a,b)=>a+b,0)}}const p=pool.find(p=>p.puzzle.join('')!==previous)||pool[0];return {...p,puzzle:[...p.puzzle],solution:[...p.solution],rating:grade(p.puzzle),score:0}}
- const api={grade,solve,seed,transform,makePuzzle};if(typeof module!=='undefined')module.exports=api;else root.SudokuEngine=api;
+ // rng defaults to Math.random; pass a seeded one (see daily) to get the same puzzle on every device.
+ function transform(seed,rng=Math.random){const order=()=>shuffle([0,1,2],rng).flatMap(b=>shuffle([0,1,2],rng).map(i=>b*3+i)),rows=order(),cols=order(),digits=[0,...shuffle([1,2,3,4,5,6,7,8,9],rng)],transpose=rng()<.5;const map=g=>rows.flatMap(r=>cols.map(c=>digits[g[transpose?c*9+r:r*9+c]]));return {puzzle:map(seed.puzzle),solution:map(seed.solution)}}
+ function makePuzzle(level,bank,previous='',rng=Math.random){const pool=bank[level];if(!pool?.length)throw Error('No verified puzzles for '+level);for(let attempt=0;attempt<80;attempt++){const p=transform(pool[Math.floor(rng()*pool.length)],rng),rating=grade(p.puzzle);if(rating.level===level&&p.puzzle.join('')!==previous)return {...p,rating,score:Object.values(rating.steps).reduce((a,b)=>a+b,0)}}const p=pool.find(p=>p.puzzle.join('')!==previous)||pool[0];return {...p,puzzle:[...p.puzzle],solution:[...p.solution],rating:grade(p.puzzle),score:0}}
+ // Puzzle of the day: the date picks the level (harder through the week) and seeds the puzzle,
+ // so every profile and device on this version gets the same grid. key is a local 'YYYY-MM-DD'.
+ const DAILY_LEVELS=['Hard','Easy','Easy','Medium','Medium','Hard','Hard'];
+ function daily(key,bank){const [y,m,d]=key.split('-').map(Number),level=DAILY_LEVELS[new Date(y,m-1,d).getDay()];let h=2166136261;for(const ch of 'sudoku-pencil-daily-'+key){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}let s=h>>>0;const rng=()=>{s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};return {level,...makePuzzle(level,bank,'',rng)}}
+ const api={grade,solve,seed,transform,makePuzzle,daily};if(typeof module!=='undefined')module.exports=api;else root.SudokuEngine=api;
 })(globalThis);

@@ -1,10 +1,19 @@
-# Sudoku Pencil v0.9.17 — Home Screen icon
+# Sudoku Pencil v0.9.18 — Puzzle of the day
 
 ## Install
 Upload all EIGHTEEN files to the same GitHub Pages folder:
 index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js, README.md, libre-franklin.woff2, old-standard-bold.woff2, patrick-hand.woff2, architects-daughter.woff2, bitter.woff2, apple-touch-icon.png, icon-192.png and icon-512.png.
 
-Refresh online until v0.9.17 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+Refresh online until v0.9.18 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+
+## Puzzle of the day (new in v0.9.18)
+Tap **Today**, the first tab beside Easy to Expert. Everyone gets the same puzzle that day, on every profile and on every device running this version, so the family can compare times. It's made on the device from the date, so it needs no internet and nothing is downloaded.
+- It gets harder through the week, like a newspaper: Easy on Monday and Tuesday, Medium on Wednesday and Thursday, Hard from Friday to Sunday.
+- It saves, resumes and backs up like any other game. Notes, undo, Fill notes and mistake checking all work as usual.
+- When you finish, the message ranks everyone who has solved today's puzzle and names who still has to. Menu → Stats shows the same list, plus your Puzzle of the day count, best and average.
+- A new puzzle appears at midnight. Unfinished earlier ones stay in Menu → Daily challenges / Import for a week, then are removed. Your solved times are kept.
+- New puzzle from the Menu takes you back to your usual level.
+- Stats now lists imported screenshot challenges as "Imported" (they were "Daily").
 
 ## Use it as an app (new in v0.9.17)
 The app now has a proper Home Screen icon: a printed Sudoku box with a handwritten 7 in a highlighted square.
