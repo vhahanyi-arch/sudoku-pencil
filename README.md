@@ -1,10 +1,15 @@
-# Sudoku Pencil v0.9.18 — Puzzle of the day
+# Sudoku Pencil v0.9.19 — Easier-to-spot matching numbers
 
 ## Install
 Upload all EIGHTEEN files to the same GitHub Pages folder:
 index.html, manifest.json, sw.js, engine.js, puzzles.js, backup.js, screenshot.js, imports.js, import-worker.js, README.md, libre-franklin.woff2, old-standard-bold.woff2, patrick-hand.woff2, architects-daughter.woff2, bitter.woff2, apple-touch-icon.png, icon-192.png and icon-512.png.
 
-Refresh online until v0.9.18 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+Refresh online until v0.9.19 appears in the top-right corner. New uploads show on the next online launch. You don't need to upload PRODUCT.md, DESIGN.md, the .impeccable folder or the .claude folder; they are design notes and local test settings.
+
+## Matching numbers stand out (new in v0.9.19)
+When you select a square with a number, every other copy of that number is now circled and gets a stronger highlight, in every style, light and dark. The circle only ever means "same number": the selected square and mistakes still use square outlines, so they can't be mixed up. Numbers and notes stay as readable as before. Turn it off with Menu → Writing & display settings → Highlight matching digits.
+
+Also fixed: on some iPads in landscape (for example 1024 × 768), the Expert tab was cut off after the Today tab was added.
 
 ## Puzzle of the day (new in v0.9.18)
 Tap **Today**, the first tab beside Easy to Expert. Everyone gets the same puzzle that day, on every profile and on every device running this version, so the family can compare times. It's made on the device from the date, so it needs no internet and nothing is downloaded.

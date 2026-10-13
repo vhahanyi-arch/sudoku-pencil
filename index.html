@@ -167,8 +167,8 @@ html:not([data-style="classic"]){background:var(--paper);background-image:var(--
 @media(max-width:500px){:root:not([data-style="classic"]) .pips{display:none}:root:not([data-style="classic"]) #keypad{gap:4px}:root:not([data-style="classic"]) #keypad button{font-size:21px;padding:14px 0 6px}:root:not([data-style="classic"]) #keypad button::after{top:3px;right:3px;font-size:11px}:root:not([data-style="classic"]) body[data-writing-mode="notes"] #keypad button{font-size:19px}}
 @media(max-width:420px){:root:not([data-style="classic"]) .brand{font-size:25px}:root:not([data-style="classic"]) .meta{gap:6px}:root:not([data-style="classic"]) #puzzleNo{font-size:14px}:root:not([data-style="classic"]) .dateline{letter-spacing:.05em}}
 @media(min-width:900px) and (min-height:550px){:root:not([data-style="classic"]) main{max-width:calc(var(--board-fit) + 300px)}:root:not([data-style="classic"]) .boardPanel{width:var(--board-fit)}:root:not([data-style="classic"]) .playLayout{grid-template-columns:auto 280px;justify-content:start}
-:root:not([data-style="classic"]) .playTools{border-left:var(--rule) solid var(--rule-c);padding-left:20px;align-self:stretch}:root:not([data-style="classic"]) main>.difficulty{max-width:none;margin-right:300px}
-:root:not([data-style="classic"]) body[data-grid-layout="large"] main>.difficulty{margin-right:260px}:root:not([data-style="classic"]) body[data-grid-layout="large"] main{max-width:1160px}:root:not([data-style="classic"]) body[data-grid-layout="large"] .playLayout{grid-template-columns:minmax(0,1fr) 240px}:root:not([data-style="classic"]) body[data-grid-layout="large"] .boardPanel{width:100%}}
+:root:not([data-style="classic"]) .playTools{border-left:var(--rule) solid var(--rule-c);padding-left:20px;align-self:stretch}:root:not([data-style="classic"]) main>.difficulty{max-width:none;margin-right:max(0px,min(300px,calc(100% - 340px)))}
+:root:not([data-style="classic"]) body[data-grid-layout="large"] main>.difficulty{margin-right:max(0px,min(260px,calc(100% - 340px)))}:root:not([data-style="classic"]) body[data-grid-layout="large"] main{max-width:1160px}:root:not([data-style="classic"]) body[data-grid-layout="large"] .playLayout{grid-template-columns:minmax(0,1fr) 240px}:root:not([data-style="classic"]) body[data-grid-layout="large"] .boardPanel{width:100%}}
 
 :root[data-style="wood"] .given{inset:8%;border-radius:7px;background:var(--tile);box-shadow:0 1px 2px rgba(50,25,5,.45),inset 0 -2px 0 rgba(0,0,0,.08)}
 :root[data-style="wood"] .cell.match .given{background:var(--match)}:root[data-style="wood"] .cell.selected .given{background:var(--selected)}
@@ -196,9 +196,25 @@ html:not([data-style="classic"]){background:var(--paper);background-image:var(--
 @media(max-width:420px){:root[data-style="newspaper"] .meta{font-size:11px}}
 @media(min-width:900px) and (min-height:550px){body[data-input-mode="keypad"] .primaryTools{grid-template-columns:1fr 1fr}}
 #inputModeHelp{grid-column:1/-1;line-height:1.5}
+/* Matching digits: a stronger highlighter fill, and every copy of the selected digit is circled.
+   A circle never means anything else: the selection and mistakes are square outlines. */
+.cell.match:not(.selected)::after{content:"";position:absolute;inset:var(--match-inset,6%);border:3px solid var(--match-ring);border-width:max(2px,4cqw);border-radius:var(--match-shape,50%);pointer-events:none}
+:root[data-style="wood"]{--match-shape:9px;--match-inset:3%}
+:root[data-style="newspaper"]{--match:#b0e081;--match-ring:#2f6b1a}
+:root[data-style="newspaper"][data-theme="dark"]{--match:#37532c;--match-ring:#9be27a}
+:root[data-style="chalk"]{--match:#305f75;--match-ring:#a8d8ff}
+:root[data-style="chalk"][data-theme="dark"]{--match:#295a6d;--match-ring:#9fd0f7}
+:root[data-style="notebook"]{--match:#a6dd80;--match-ring:#2a6a1c}
+:root[data-style="notebook"][data-theme="dark"]{--match:#1e6359;--match-ring:#7fe0c8}
+:root[data-style="wood"]{--match:#a3bd5a;--match-ring:#23400c}
+:root[data-style="wood"][data-theme="dark"]{--match:#445b1d;--match-ring:#c4e88a}
+:root[data-style="calm"]{--match:#c4e4d6;--match-ring:#2f7a5f}
+:root[data-style="calm"][data-theme="dark"]{--match:#284e46;--match-ring:#7fd6b9}
+:root[data-style="classic"]{--match-ring:#7a5800}:root[data-style="classic"] .cell.match{background:#f5d36a}
+:root[data-style="classic"][data-theme="dark"]{--match-ring:#e8c25a}:root[data-style="classic"][data-theme="dark"] .cell.match{background:#4a3c12}
 </style></head>
 <body><main>
-  <header><div class="masthead"><div class="brand">Sudoku Pencil</div><div class="dateline" id="dateline"></div></div><div class="headerActions"><span class="version">v0.9.18</span><button id="openMenu" aria-haspopup="dialog">Menu</button></div></header>
+  <header><div class="masthead"><div class="brand">Sudoku Pencil</div><div class="dateline" id="dateline"></div></div><div class="headerActions"><span class="version">v0.9.19</span><button id="openMenu" aria-haspopup="dialog">Menu</button></div></header>
   <div id="storageWarning" role="alert" hidden>Your browser storage is full, so recent moves are not being saved. Download a backup now from Menu → Profiles → Backup &amp; restore. Saving resumes automatically once space is available.</div>
   <div class="profilebar"><label for="profileSelect">Playing as</label><select id="profileSelect"></select></div>
   <div class="difficulty" id="difficulty"></div>
@@ -276,7 +292,7 @@ html:not([data-style="classic"]){background:var(--paper);background-image:var(--
 <script>
 (() => {
   'use strict';
-  const VERSION='0.9.18', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
+  const VERSION='0.9.19', MULTI_STROKE_PAUSE=1600, LEVELS=['Easy','Medium','Hard','Expert'];
   const K={db:'sp-profiles-v09',oldGames:'sp-games-v081',oldPrefs:'sp-prefs-v081',oldStats:'sp-stats-v081',oldLearn:'sp-learn-v081'};
   const $=s=>document.querySelector(s), board=$('#board'), status=$('#status');
   let state, selected=-1, drawing=false, activeStroke=[], timerId, paused=false, autoPaused=false, training=null, practice=null;
